@@ -68,17 +68,19 @@ function getTodo(req: express.Request, res: express.Response) {
     res.json(todoList);
 }
 
+
 function deleteTodo(req: express.Request, res: express.Response): void {
     let todoIndex: number = Number(req.params.id);
     let deletedEntry: ToDoEntry[];
     for (let i: number = 0; i < todoList.length; i++) {
         if (todoList[i].id === todoIndex) {
-            deletedEntry = todoList.splice(i, 1);
+            todoList.splice(i, 1);
             break;
         }
     }
     if (deletedEntry !== null) {
         res.status(200);
+        res.json({msg: 'User was deleted'});
     } else {
         res.status(404);
         res.json({msg: 'Todo Entry not found!'});

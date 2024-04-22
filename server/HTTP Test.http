@@ -12,3 +12,17 @@ Content-Type: application/json
 }
 
 ###
+
+DELETE http://localhost:8080/todo/1 HTTP/2
+
+###
+
+PATCH http://localhost:8080/todo/0 HTTP/2
+Host: localhost:8080
+Content-Type: application/json
+
+{
+  "title": "Yippee",
+  "description": "YipYip",
+  "priority": "2"
+}
