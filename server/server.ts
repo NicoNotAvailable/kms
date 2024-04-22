@@ -21,9 +21,11 @@ export class ToDoEntry {
         this.priority = priority;
         this.status = false;
     }
-
-
 }
+
+let todoList: ToDoEntry[] = [];
+
+
 
 function sendMainpage(req: express.Request, res: express.Response) {
     res.status(200);
