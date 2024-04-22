@@ -20,6 +20,8 @@ export class ToDoEntry {
         this.priority = priority;
         this.status = false;
     }
-
-
 }
+
+let todoList: ToDoEntry[] = [];
+
+
