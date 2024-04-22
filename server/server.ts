@@ -5,8 +5,8 @@ app.listen(8080);
 app.use("/", express.static(__dirname + "/../client"));
 app.get("/", sendMainpage);
 
-app.post("/todo", postTask)
-app.get("/todo")
+app.post("/todo", postTask);
+app.get("/todo", getTodo);
 app.delete("/todo/:id", deleteTodo);
 app.patch("/todo/:id", changeTodo);
 
