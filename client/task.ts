@@ -3,6 +3,7 @@ export class Task {
     status: boolean
     priority: number
     description: string
+    id: number
 
     constructor(title: string, priority: number, description: string) {
         this.title = title;

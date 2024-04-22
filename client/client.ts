@@ -1,14 +1,16 @@
 //Funktionen die beim Laden der Seite ausgeführt werden
 console.log("sdghgfddxtresfd")
+
+let inputAddTitle: HTMLInputElement = document.querySelector('#inputAddTitel')!;
+let inputAddForm: HTMLFormElement = document.querySelector('#inputAddForm')!;
+let inputAddBeschreibung: HTMLInputElement = document.querySelector('#inputAddBeschreibung')!;
+let inputAddPrio: HTMLInputElement = document.querySelector('#inputAddPrio')!;
 readTodo();
 
-
-let addTaskForm = document.getElementById('inputAddForm');
-let addTaskTitel = document.getElementById('inputAddTitel');
-let addTaskPrio = document.getElementById('inputAddPrio');
-let addTaskBeschreibung = document.getElementById('inputAddBeschreibung');
-
 let taskTable = document.getElementById('taskTable');
+
+inputAddForm.addEventListener('submit', postTask);
+
 
 function readTodo() {
 
@@ -59,4 +61,42 @@ function readTodo() {
         // Wenn kein Response eintrifft
         console.log("Error: No Response received", error)
     })
+}
+
+
+async function postTask(e: Event): Promise<void> {
+    e.preventDefault();
+
+    let title: string = inputAddTitle.value.trim();
+    let desc: string = inputAddBeschreibung.value.trim();
+    let prio: string = inputAddPrio.value.trim();
+
+    if (title.length === 0 || desc.length === 0 || prio.length === 0) {
+        inputAddForm.reportValidity();
+        inputAddForm.innerText = "Bitte trage alle Felder ein!";
+        return;
+    }
+
+    try {
+        const res: Response = await fetch("/todo", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                title: title,
+                description: desc,
+                priority: prio,
+            })
+        });
+        const json = await res.json();
+        if (res.status === 201) {
+            inputAddForm.reset();
+            console.log("läuft");
+        } else if (res.status === 400) {
+            inputAddForm.innerText = json.message;
+        }
+    } catch (err) {
+        console.log("Fehler", err);
+    }
 }
