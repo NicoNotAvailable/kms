@@ -41,3 +41,34 @@ async function postTask(e: Event): Promise<void> {
         console.log("Fehler", err);
     }
 }
+
+async function editTask(id: number): Promise<void> {
+
+    const title: string = "yolo";
+    const description: string = "lol";
+    const priority: number = 3;
+    const status: boolean = true
+
+    try {
+        const response: Response = await fetch(`/todo/${id}`, {
+            method: "PATCH",
+            headers: {
+                "Content-type": "application/json"
+            },
+            body: JSON.stringify({
+                "title": title,
+                "description": description,
+                "priority": priority,
+                "status": status
+            })
+        });
+        if (response.status == 201) {
+            alert("hat funktioniert");
+        } else {
+            alert("Es ist ein Fehler aufgetreten");
+            throw new Error();
+        }
+    } catch (err) {
+        console.log("Ein Fehler ist aufgetreten", err);
+    }
+}
