@@ -25,4 +25,21 @@ export class ToDoEntry {
 
 let todoList: ToDoEntry[] = [];
 
+/* Tier posten */
+function postTask(req: express.Request, res: express.Response) {
+    const title: string = req.body.title;
+    const description: string = req.body.description;
+    const priority: number = req.body.priority;
+
+    if (title === undefined || description === undefined || title.trim() == "" || description.trim() == "") {
+        res.status(400);
+        res.json({message: "Values are not defined"});
+    } else {
+        const newEntry = new ToDoEntry(title, description, priority);
+        todoList.push(newEntry);
+        res.status(200);
+        res.json({message: "Task was created"});
+    }
+}
+
 
