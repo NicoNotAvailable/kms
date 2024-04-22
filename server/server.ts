@@ -68,6 +68,7 @@ function getTodo(req: express.Request, res: express.Response) {
     res.json(todoList);
 }
 
+
 function deleteTodo(req: express.Request, res: express.Response): void {
     let todoIndex: number = Number(req.params.id);
     let deletedEntry: ToDoEntry[];
