@@ -42,13 +42,11 @@ async function postTask(e: Event): Promise<void> {
     }
 }
 
-async function editTask(e: Event): Promise<void> {
-    e.preventDefault();
+async function editTask(id: number): Promise<void> {
 
     const title: string = "yolo";
     const description: string = "lol";
     const priority: number = 3;
-    const id: number = 1;
 
     try {
         const response: Response = await fetch(`/todo/${id}`, {
