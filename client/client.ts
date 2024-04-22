@@ -47,6 +47,7 @@ async function editTask(id: number): Promise<void> {
     const title: string = "yolo";
     const description: string = "lol";
     const priority: number = 3;
+    const status: boolean = true
 
     try {
         const response: Response = await fetch(`/todo/${id}`, {
@@ -57,7 +58,8 @@ async function editTask(id: number): Promise<void> {
             body: JSON.stringify({
                 "title": title,
                 "description": description,
-                "priority": priority
+                "priority": priority,
+                "status": status
             })
         });
         if (response.status == 201) {
