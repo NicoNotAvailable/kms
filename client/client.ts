@@ -41,3 +41,24 @@ async function postTask(e: Event): Promise<void> {
         console.log("Fehler", err);
     }
 }
+
+
+/*
+Tabelle.addEventListener("click", async (event:Event) => {
+    const target: HTMLElement = (event.target as HTMLElement).closest(".delete");
+    if (target !== null) {
+
+        // data-userindex muss noch angepasst werden
+        let index = target.parentElement.parentElement.getAttribute('data-userindex');
+
+        try {
+            const res: Response = await fetch('/todo/' + index, {
+                method: 'DELETE'
+            });
+        }  catch (err) {
+            console.log("Error bei DELETE");
+        }
+        // todo, hier die Render todo List Funktion einfügen
+    }
+});
+ */
