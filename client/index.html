@@ -9,42 +9,64 @@
     <title>To-do App</title>
 </head>
 <body>
-
-<div class="input-group mb-3">
-    <span class="input-group-text" id="basic-addon1">@</span>
-    <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
-</div>
-
-<div class="input-group mb-3">
-    <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
-    <span class="input-group-text" id="basic-addon2">@example.com</span>
-</div>
-
-<div class="mb-3">
-    <label for="basic-url" class="form-label">Your vanity URL</label>
-    <div class="input-group">
-        <span class="input-group-text" id="basic-addon3">https://example.com/users/</span>
-        <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3 basic-addon4">
+<!-- User Input -->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 text-center">
+            <h2>Neue Aufgabe erstellen</h2> <br>
+        </div>
     </div>
-    <div class="form-text" id="basic-addon4">Example help text goes outside the input group.</div>
+
+    <form id="inputAddForm">
+        <div class="row">
+            <div class="col-12 col-md-2"></div>
+            <div class="col-12 col-md-4">
+                <div class="mb-3">
+                    <label for="inputAddTitel" class="form-label">Titel</label>
+                    <input type="text" placeholder="Titel" class="form-control" id="inputAddTitel" required>
+                </div>
+
+            </div>
+
+
+            <div class="col-12 col-md-4 UserInputContainer">
+                <div class="mb-3">
+                    <label for="inputAddPrio" class="form-label">Priorität</label>
+                    <input type="text" class="form-control" placeholder="1-3" id="inputAddPrio" required>
+                </div>
+
+            </div>
+
+            <div class="col-12 col-md-2"></div>
+        </div>
+
+
+        <div class="row ">
+            <div class="col-12 col-md-2"></div>
+
+
+            <div class="col-12 col-md-8">
+
+                <div class="mb-3">
+                    <label for="inputAddBeschreibung" class="form-label">Beschreibung</label>
+                    <input type="text" placeholder="Beschreibung" class="form-control" id="inputAddBeschreibung" required>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-2 col-4"></div>
+            <div class="col-2 my-1">
+                <button type="submit" class="btn btn-primary">Hinzufügen</button>
+            </div>
+        </div>
+    </form>
 </div>
 
-<div class="input-group mb-3">
-    <span class="input-group-text">$</span>
-    <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
-    <span class="input-group-text">.00</span>
-</div>
 
-<div class="input-group mb-3">
-    <input type="text" class="form-control" placeholder="Username" aria-label="Username">
-    <span class="input-group-text">@</span>
-    <input type="text" class="form-control" placeholder="Server" aria-label="Server">
-</div>
-
-<div class="input-group">
-    <span class="input-group-text">With textarea</span>
-    <textarea class="form-control" aria-label="With textarea"></textarea>
-</div>
 
 </body>
 </html>
