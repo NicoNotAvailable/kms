@@ -91,7 +91,7 @@ function changeTodo(req: express.Request, res: express.Response): void {
     let todoIndex: number = Number(req.params.id);
     let newTitle: string | undefined = req.body.title;
     let newDesc: string | undefined = req.body.description;
-    let isDone: string | undefined = req.body.status;
+    let isDone: boolean | undefined = req.body.status;
     let prio: number | undefined = Number(req.body.priority);
 
     let changedEntry: ToDoEntry;
@@ -104,6 +104,7 @@ function changeTodo(req: express.Request, res: express.Response): void {
     }
     changedEntry.title = newTitle;
     changedEntry.description = newDesc;
+    changedEntry.status = isDone;
     changedEntry.priority = prio;
     res.status(200);
     res.json({msg: 'Task is changed successfully', todo: changedEntry});
