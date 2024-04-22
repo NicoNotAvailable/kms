@@ -1,5 +1,3 @@
-import {Task} from './task';
-
 let inputAddTitle: HTMLInputElement = document.querySelector('#inputAddTitel')!;
 let inputAddForm: HTMLFormElement = document.querySelector('#inputAddForm')!;
 let inputAddBeschreibung: HTMLInputElement = document.querySelector('#inputAddBeschreibung')!;
@@ -35,6 +33,7 @@ async function postTask(e: Event): Promise<void> {
         const json = await res.json();
         if (res.status === 201) {
             inputAddForm.reset();
+            console.log("läuft");
         } else if (res.status === 400) {
             inputAddForm.innerText = json.message;
         }
