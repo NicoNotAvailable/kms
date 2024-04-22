@@ -79,7 +79,7 @@ function deleteTodo(req: express.Request, res: express.Response): void {
     }
     if (deletedEntry !== null) {
         res.status(200);
-    } else{
+    } else {
         res.status(404);
         res.json({msg: 'Todo Entry not found!'});
     }
@@ -93,25 +93,16 @@ function changeTodo(req: express.Request, res: express.Response): void {
     let prio: number | undefined = Number(req.body.priority);
 
     let changedEntry: ToDoEntry;
-    let entryPos: number;
 
     for (let i: number = 0; i < todoList.length; i++) {
         if (todoList[i].id === todoIndex) {
             changedEntry = todoList[i];
-            entryPos = i;
             break;
         }
     }
-    if(isDone === "done"){
-        changedEntry.status = true;
-        todoList.splice(1, entryPos);
-        res.status(200);
-        res.json({msg: 'Task is done'});
-    } else{
-        changedEntry.title = newTitle;
-        changedEntry.description = newDesc;
-        changedEntry.priority = prio;
-        res.status(200);
-        res.json({msg: 'Task is changed successfully', todo: changedEntry});
-    }
+    changedEntry.title = newTitle;
+    changedEntry.description = newDesc;
+    changedEntry.priority = prio;
+    res.status(200);
+    res.json({msg: 'Task is changed successfully', todo: changedEntry});
 }
