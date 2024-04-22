@@ -10,9 +10,9 @@ async function postTask(e: Event): Promise<void> {
 
     let title: string = inputAddTitle.value.trim();
     let desc: string = inputAddBeschreibung.value.trim();
-    let prio: string = inputAddPrio.value.trim();
+    let prio: number = inputAddPrio.valueAsNumber;
 
-    if (title.length === 0 || desc.length === 0 || prio.length === 0) {
+    if (title.length === 0 || desc.length === 0 || prio < 1 || prio > 3) {
         inputAddForm.reportValidity();
         inputAddForm.innerText = "Bitte trage alle Felder ein!";
         return;
