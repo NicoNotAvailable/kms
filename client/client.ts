@@ -5,10 +5,10 @@ let inputAddForm: HTMLFormElement = document.querySelector('#inputAddForm');
 let inputAddBeschreibung = document.querySelector('#inputAddBeschreibung');
 let inputAddPrio = document.querySelector('#inputAddPrio');
 
-inputAddForm.addEventListener('submit', postTask);
+inputAddForm.addEventListener('submit', postTask)
 
-async function postTask(e: Event)  {
-    e.preventDefault();
+async function postTask(): Promise<void>  {
+
     let title: string = inputAddTitle.value.trim();
     let desc: string = inputAddTitle.value.trim();
     let prio: string = inputAddTitle.value.trim();
