@@ -5,7 +5,7 @@ app.listen(8080);
 app.use("/", express.static(__dirname + "/../client"));
 app.get("/", sendMainpage);
 
-app.post("/todo")
+app.post("/todo", postTask)
 app.get("/todo")
 app.delete("/todo/:id")
 
@@ -25,7 +25,7 @@ export class ToDoEntry {
 
 let todoList: ToDoEntry[] = [];
 
-/* Tier posten */
+/* Task posten */
 function postTask(req: express.Request, res: express.Response) {
     const title: string = req.body.title;
     const description: string = req.body.description;
