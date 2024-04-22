@@ -2,7 +2,8 @@ import * as express from 'express';
 
 const app: express.Express = express();
 app.listen(8080);
-
+app.use("/", express.static(__dirname + "/../client"));
+app.get("/", sendMainpage);
 
 app.post("/todo")
 app.get("/todo")
