@@ -43,3 +43,7 @@ function postTask(req: express.Request, res: express.Response) {
 }
 
 
+function sendMainpage(req: express.Request, res: express.Response) {
+    res.status(200);
+    res.sendFile(`${__dirname}/client/index.html`);
+}
