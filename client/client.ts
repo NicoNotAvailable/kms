@@ -7,7 +7,7 @@ let inputAddBeschreibung: HTMLInputElement = document.querySelector('#inputAddBe
 let inputAddPrio: HTMLInputElement = document.querySelector('#inputAddPrio')!;
 readTodo();
 
-let taskTable = document.getElementById('taskTable');
+let taskTable = document.getElementById('taskTable')!;
 
 inputAddForm.addEventListener('submit', postTask);
 
@@ -61,6 +61,7 @@ function readTodo() {
         // Wenn kein Response eintrifft
         console.log("Error: No Response received", error)
     })
+
 }
 
 
@@ -89,14 +90,17 @@ async function postTask(e: Event): Promise<void> {
                 priority: prio,
             })
         });
+
         const json = await res.json();
         if (res.status === 201) {
             inputAddForm.reset();
             console.log("läuft");
+            readTodo();
         } else if (res.status === 400) {
             inputAddForm.innerText = json.message;
         }
     } catch (err) {
         console.log("Fehler", err);
     }
+
 }
