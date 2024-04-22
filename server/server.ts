@@ -48,7 +48,7 @@ function postTask(req: express.Request, res: express.Response) {
     } else {
         const newEntry = new ToDoEntry(title, description, priority);
         todoList.push(newEntry);
-        res.status(200);
+        res.status(201);
         res.json({message: "Task was created"});
     }
 }
