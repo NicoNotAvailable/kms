@@ -1,1 +1,14 @@
 GET http://localhost:8080/todo HTTP/2
+
+###
+
+POST http://localhost:8080/todo HTTP/2
+Content-Type: application/json
+
+{
+  "title": "Go for a run",
+  "description": "Run for at least 30 minutes.",
+  "priority": 3
+}
+
+###

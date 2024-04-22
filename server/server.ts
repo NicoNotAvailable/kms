@@ -4,9 +4,10 @@ const app: express.Express = express();
 app.listen(8080);
 app.use("/", express.static(__dirname + "/../client"));
 app.get("/", sendMainpage);
+app.use(express.json());
 
-app.post("/todo", postTask);
 app.get("/todo", getTodo);
+app.post("/todo", postTodo);
 app.delete("/todo/:id", deleteTodo);
 app.patch("/todo/:id", changeTodo);
 
@@ -43,10 +44,12 @@ function sendMainpage(req: express.Request, res: express.Response) {
     res.sendFile(`${__dirname}/client/index.html`);
 }
 
-function postTask(req: express.Request, res: express.Response) {
+function postTodo(req: express.Request, res: express.Response) {
+    console.log(req);
     const title: string = req.body.title;
     const description: string = req.body.description;
     const priority: number = req.body.priority;
+    console.log(title, description, priority)
 
     if (title === undefined || description === undefined || title.trim() == "" || description.trim() == "") {
         res.status(400);
@@ -61,8 +64,8 @@ function postTask(req: express.Request, res: express.Response) {
 
 function getTodo(req: express.Request, res: express.Response) {
     console.log(todoList);
+    res.status(200);
     res.json(todoList);
-    res.sendStatus(200);
 }
 
 function deleteTodo(req: express.Request, res: express.Response): void {
