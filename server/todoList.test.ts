@@ -38,4 +38,27 @@ describe('ToDoList', () => {
         }, 1000);
 
     })
+
+    //Annalena
+    test('testDeleteTodo', () => {
+        let newEntry = new ToDoEntry("deleteThis", "Description", 1);
+        todoList.push(newEntry);
+        let id = newEntry.id.toString();
+
+        const mockReq = {
+            params: { id: id },
+            body: { title: newEntry.title, description: newEntry.description, status: newEntry.status, priority: newEntry.priority }
+        } as unknown as Request;
+
+        const mockRes = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn()
+        } as unknown as Response;
+
+        changeTodo(mockReq, mockRes);
+
+        setTimeout(() => {
+            expect(todoList.length).toBe(0);
+        }, 1000)
+    })
 });
