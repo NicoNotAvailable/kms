@@ -87,7 +87,7 @@ function deleteTodo(req: express.Request, res: express.Response): void {
     }
 }
 
-function changeTodo(req: express.Request, res: express.Response): void {
+export function changeTodo(req: express.Request, res: express.Response): void {
     let todoIndex: number = Number(req.params.id);
     let newTitle: string | undefined = req.body.title;
     let newDesc: string | undefined = req.body.description;
