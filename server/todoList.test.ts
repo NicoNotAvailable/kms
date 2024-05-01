@@ -1,5 +1,5 @@
 import { describe, test } from '@jest/globals';
-import {ToDoEntry, changeTodo} from './server';
+import {ToDoEntry, changeTodo, deleteTodo} from './server';
 import { Request, Response } from 'express';
 
 let todoList= [];
@@ -55,7 +55,7 @@ describe('ToDoList', () => {
             json: jest.fn()
         } as unknown as Response;
 
-        changeTodo(mockReq, mockRes);
+        deleteTodo(mockReq, mockRes);
 
         setTimeout(() => {
             expect(todoList.length).toBe(0);

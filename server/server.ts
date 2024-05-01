@@ -69,7 +69,7 @@ function getTodo(req: express.Request, res: express.Response) {
 }
 
 
-function deleteTodo(req: express.Request, res: express.Response): void {
+export function deleteTodo(req: express.Request, res: express.Response): void {
     let todoIndex: number = Number(req.params.id);
     let deletedEntry: ToDoEntry[];
     for (let i: number = 0; i < todoList.length; i++) {
