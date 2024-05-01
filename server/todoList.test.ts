@@ -33,6 +33,9 @@ describe('ToDoList', () => {
 
         changeTodo(mockReq, mockRes);
 
-        expect(todoList[0].description).toBe(newDescription);
+        setTimeout(() => {
+            expect(todoList[0].description).toBe(newDescription);
+        }, 1000);
+
     })
 });

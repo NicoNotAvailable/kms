@@ -96,16 +96,20 @@ export function changeTodo(req: express.Request, res: express.Response): void {
 
     let changedEntry: ToDoEntry;
 
-    for (let i: number = 0; i < todoList.length; i++) {
-        if (todoList[i].id === todoIndex) {
-            changedEntry = todoList[i];
-            break;
+    for (const element of todoList) {
+        if (element.id === todoIndex) {
+            changedEntry = element;
+            changedEntry.title = newTitle;
+            changedEntry.description = newDesc;
+            changedEntry.status = isDone;
+            changedEntry.priority = prio;
+            res.status(200);
+            res.json({msg: 'Task is changed successfully', todo: changedEntry});
+            console.log(changedEntry.description);
+            return;
         }
     }
-    changedEntry.title = newTitle;
-    changedEntry.description = newDesc;
-    changedEntry.status = isDone;
-    changedEntry.priority = prio;
-    res.status(200);
-    res.json({msg: 'Task is changed successfully', todo: changedEntry});
+
+    res.status(404);
+    res.json({ msg: 'Todo Entry not found!' });
 }
