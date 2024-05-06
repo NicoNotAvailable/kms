@@ -1,5 +1,5 @@
 import { describe, test } from '@jest/globals';
-import {ToDoEntry, changeTodo, deleteTodo, markDone} from './server';
+import {ToDoEntry, changeTodo, deleteTodo, markDone, postCat, categoryList} from './server';
 import { Request, Response } from 'express';
 
 let todoList= [];
@@ -63,6 +63,23 @@ describe('ToDoList', () => {
     })
 
     //Nico
+    test('testCreateCategory', () => {
+        let name: string = "SwagCategory";
+
+        const mockReq = {
+            body: { name: name }
+        } as unknown as Request;
+        const mockRes = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn()
+        } as unknown as Response;
+
+        postCat(mockReq, mockRes);
+        setTimeout(() =>{
+            expect(categoryList.length).toBe(1);
+        }, 1000);
+    })
+
     test('testMarkAsDone', () =>{
         let newEntry: ToDoEntry = new ToDoEntry("Mark this", "HEHHEHE im swag", 2);
         todoList.push(newEntry);

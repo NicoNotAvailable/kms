@@ -12,6 +12,8 @@ app.delete("/todo/:id", deleteTodo);
 app.put("/todo/:id", changeTodo);
 app.patch("/todo/:id", markDone);
 
+app.post("/cat", postCat);
+
 export class ToDoEntry {
     id: number;
     title: string;
@@ -20,8 +22,8 @@ export class ToDoEntry {
     priority: number;
 
     constructor(title: string, description: string, priority: number) {
-        this.id = incrementedId;
-        incrementedId++;
+        this.id = incrementedIdTodo;
+        incrementedIdTodo++;
         this.title = title;
         this.description = description;
         this.priority = priority;
@@ -29,9 +31,24 @@ export class ToDoEntry {
     }
 }
 
-let incrementedId: number = 0;
+export class Category{
+    id: number;
+    name: string;
+    todos: ToDoEntry[];
 
-let todoList: ToDoEntry[] = [];
+    constructor(name: string) {
+        this.id = incrementedIdCat;
+        incrementedIdCat++;
+        this.name = name;
+        this.todos = [];
+    }
+}
+
+let incrementedIdTodo: number = 0;
+let incrementedIdCat: number = 0;
+
+export let todoList: ToDoEntry[] = [];
+export let categoryList: Category[] = [];
 let todo1 = new ToDoEntry('Finish project', 'Complete the final report and submit it.', 2);
 let todo2 = new ToDoEntry('Buy groceries', 'Get milk, eggs, bread, and vegetables.', 1);
 let todo3 = new ToDoEntry('Go for a run', 'Run for at least 30 minutes.', 3);
@@ -46,11 +63,9 @@ function sendMainpage(req: express.Request, res: express.Response) {
 }
 
 function postTodo(req: express.Request, res: express.Response) {
-    console.log(req);
     const title: string = req.body.title;
     const description: string = req.body.description;
     const priority: number = req.body.priority;
-    console.log(title, description, priority)
 
     if (title === undefined || description === undefined || title.trim() == "" || description.trim() == "") {
         res.status(400);
@@ -124,4 +139,16 @@ export function markDone(req: express.Request, res: express.Response): void {
     }
     changedEntry.status == false ? changedEntry.status = true : changedEntry.status = false;
     res.status(200).json({msg:'Todo has been marked'});
+}
+
+export function postCat(req: express.Request, res: express.Response): void {
+    let name: string = req.body.name;
+
+    if (name == undefined || name.trim().length == 0 || name === ""){
+        res.status(400).json({msg: "Name cannot be empty"});
+    } else{
+        const newCategory: Category = new Category(name);
+        categoryList.push(newCategory);
+        res.status(201).json({msg: 'Creating Category went WHOOOP WHOOP'});
+    }
 }
