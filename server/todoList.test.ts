@@ -1,5 +1,5 @@
 import { describe, test } from '@jest/globals';
-import {ToDoEntry, changeTodo, deleteTodo} from './server';
+import {ToDoEntry, changeTodo, deleteTodo, markDone} from './server';
 import { Request, Response } from 'express';
 
 let todoList= [];
@@ -60,5 +60,33 @@ describe('ToDoList', () => {
         setTimeout(() => {
             expect(todoList.length).toBe(0);
         }, 1000)
+    })
+
+    //Nico
+    test('testMarkAsDone', () =>{
+        let newEntry: ToDoEntry = new ToDoEntry("Mark this", "HEHHEHE im swag", 2);
+        todoList.push(newEntry);
+        let id: number = newEntry.id;
+
+        const mockReq = {
+            params: {id: id}
+        } as unknown as Request;
+
+        const mockRes = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn()
+        } as unknown as Response;
+
+        markDone(mockReq, mockRes);
+        let markedEntry: number;
+        for(let i: number = 0; i<todoList.length; i++){
+            if (todoList[i].id == id){
+                markedEntry = i;
+            }
+        }
+
+        setTimeout(() =>{
+            expect(todoList[markedEntry].status).toBe(true);
+        }, 1000);
     })
 });

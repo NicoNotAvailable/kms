@@ -9,7 +9,8 @@ app.use(express.json());
 app.get("/todo", getTodo);
 app.post("/todo", postTodo);
 app.delete("/todo/:id", deleteTodo);
-app.patch("/todo/:id", changeTodo);
+app.put("/todo/:id", changeTodo);
+app.patch("/todo/:id", markDone);
 
 export class ToDoEntry {
     id: number;
@@ -91,7 +92,6 @@ export function changeTodo(req: express.Request, res: express.Response): void {
     let todoIndex: number = Number(req.params.id);
     let newTitle: string | undefined = req.body.title;
     let newDesc: string | undefined = req.body.description;
-    let isDone: boolean | undefined = req.body.status;
     let prio: number | undefined = Number(req.body.priority);
 
     let changedEntry: ToDoEntry;
@@ -101,7 +101,6 @@ export function changeTodo(req: express.Request, res: express.Response): void {
             changedEntry = element;
             changedEntry.title = newTitle;
             changedEntry.description = newDesc;
-            changedEntry.status = isDone;
             changedEntry.priority = prio;
             res.status(200);
             res.json({msg: 'Task is changed successfully', todo: changedEntry});
@@ -112,4 +111,17 @@ export function changeTodo(req: express.Request, res: express.Response): void {
 
     res.status(404);
     res.json({ msg: 'Todo Entry not found!' });
+}
+
+export function markDone(req: express.Request, res: express.Response): void {
+    let todoIndex: number = Number(req.params.id);
+    let changedEntry: ToDoEntry;
+
+    for (const todo of todoList){
+        if(todo.id === todoIndex){
+            changedEntry = todo;
+        }
+    }
+    changedEntry.status == false ? changedEntry.status = true : changedEntry.status = false;
+    res.status(200).json({msg:'Todo has been marked'});
 }
