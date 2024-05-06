@@ -1,8 +1,8 @@
 import { describe, test } from '@jest/globals';
-import {ToDoEntry, changeTodo, deleteTodo, markDone, postCat, categoryList} from './server';
+import {ToDoEntry, changeTodo, deleteTodo, markDone, postCat, categoryList, todoList} from './server';
 import { Request, Response } from 'express';
 
-let todoList= [];
+let localTodoList:ToDoEntry[]= [];
 
 // Example test class using Jest
 describe('ToDoList', () => {
@@ -10,14 +10,14 @@ describe('ToDoList', () => {
     test('testCreateGame', () => {
         // Arrange
         const newEntry = new ToDoEntry("title", "description", 1);
-        todoList.push(newEntry);
-        expect(todoList.length).toBe(1);
+        localTodoList.push(newEntry);
+        expect(localTodoList.length).toBe(1);
     });
 
     //Annalena
     test('testUpdateToDo', () => {
         let newEntry = new ToDoEntry("changeThis", "DescriptionA", 1);
-        todoList.push(newEntry);
+        localTodoList.push(newEntry);
         let newDescription = 'DescriptionB';
         let id = newEntry.id.toString();
 
@@ -34,7 +34,7 @@ describe('ToDoList', () => {
         changeTodo(mockReq, mockRes);
 
         setTimeout(() => {
-            expect(todoList[0].description).toBe(newDescription);
+            expect(localTodoList[0].description).toBe(newDescription);
         }, 1000);
 
     })
@@ -42,7 +42,7 @@ describe('ToDoList', () => {
     //Annalena
     test('testDeleteTodo', () => {
         let newEntry = new ToDoEntry("deleteThis", "Description", 1);
-        todoList.push(newEntry);
+        localTodoList.push(newEntry);
         let id = newEntry.id.toString();
 
         const mockReq = {
@@ -58,7 +58,7 @@ describe('ToDoList', () => {
         deleteTodo(mockReq, mockRes);
 
         setTimeout(() => {
-            expect(todoList.length).toBe(0);
+            expect(localTodoList.length).toBe(0);
         }, 1000)
     })
 
