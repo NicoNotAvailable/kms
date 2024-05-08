@@ -13,6 +13,7 @@ app.put("/todo/:id", changeTodo);
 app.patch("/todo/:id", markDone);
 
 app.post("/cat", postCat);
+app.put("/cat/:id", updateCat);
 
 export class ToDoEntry {
     id: number;
@@ -151,4 +152,23 @@ export function postCat(req: express.Request, res: express.Response): void {
         categoryList.push(newCategory);
         res.status(201).json({msg: 'Creating Category went WHOOOP WHOOP'});
     }
+}
+
+export function updateCat(req: express.Request, res: express.Response) {
+    let id: number = Number(req.params.id);
+    let name: string = req.body.name
+
+    let changedEntry: Category;
+
+    for (const element of categoryList) {
+        if (element.id === id) {
+            changedEntry = element;
+            changedEntry.name = name;
+            res.status(200);
+            res.json({msg: 'Category is changed successfully', todo: changedEntry});
+            return;
+        }
+    }
+    res.status(404);
+    res.json({ msg: 'Category not found!' });
 }

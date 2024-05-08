@@ -1,8 +1,19 @@
 import { describe, test } from '@jest/globals';
-import {ToDoEntry, changeTodo, deleteTodo, markDone, postCat, categoryList, todoList} from './server';
+import {
+    ToDoEntry,
+    changeTodo,
+    deleteTodo,
+    markDone,
+    postCat,
+    categoryList,
+    todoList,
+    Category,
+    updateCat
+} from './server';
 import { Request, Response } from 'express';
 
 let localTodoList:ToDoEntry[]= [];
+let localCategoryList: Category[] = [];
 
 // Example test class using Jest
 describe('ToDoList', () => {
@@ -106,4 +117,26 @@ describe('ToDoList', () => {
             expect(todoList[markedEntry].status).toBe(true);
         }, 1000);
     })
+
+    //Alex
+    test('testUpdateCat', () => {
+        let newEntry: Category = new Category("CategoryB");
+        let id: number = newEntry.id;
+
+        const mockReq =  {
+            params: {id: id},
+            body: {name: newEntry.name}
+        } as unknown as Request;
+
+        const mockRes = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn()
+        } as unknown as Response;
+
+        updateCat(mockReq, mockRes);
+
+        setTimeout(() =>{
+            expect(localCategoryList[0].name).toBe(newEntry.name);
+        }, 1000);
+    });
 });
