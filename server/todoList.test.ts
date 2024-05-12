@@ -8,7 +8,7 @@ import {
     categoryList,
     todoList,
     Category,
-    updateCat
+    updateCat, deleteCat
 } from './server';
 import { Request, Response } from 'express';
 
@@ -139,4 +139,26 @@ describe('ToDoList', () => {
             expect(localCategoryList[0].name).toBe(newEntry.name);
         }, 1000);
     });
+
+    test('testDeleteCategory', () => {
+        let newEntry: Category = new Category("CategoryB");
+        localCategoryList.push(newEntry);
+        let id = newEntry.id.toString();
+
+        const mockReq = {
+            params: { id: id },
+            body: { name: newEntry.name }
+        } as unknown as Request;
+
+        const mockRes = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn()
+        } as unknown as Response;
+
+        deleteCat(mockReq, mockRes);
+
+        setTimeout(() => {
+            expect(localCategoryList.length).toBe(0);
+        }, 1000)
+    })
 });

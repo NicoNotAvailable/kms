@@ -14,6 +14,7 @@ app.patch("/todo/:id", markDone);
 
 app.post("/cat", postCat);
 app.put("/cat/:id", updateCat);
+app.delete("/cat/:id", deleteCat);
 
 export class ToDoEntry {
     id: number;
@@ -171,4 +172,22 @@ export function updateCat(req: express.Request, res: express.Response) {
     }
     res.status(404);
     res.json({ msg: 'Category not found!' });
+}
+
+export function deleteCat(req: express.Request, res: express.Response) {
+    let id: number = Number(req.params.id);
+    let deletedEntry: Category[];
+    for (let i: number = 0; i < categoryList.length; i++) {
+        if (categoryList[i].id === id) {
+            categoryList.splice(i, 1);
+            break;
+        }
+    }
+    if (deletedEntry !== null) {
+        res.status(200);
+        res.json({msg: 'Category was deleted'});
+    } else {
+        res.status(404);
+        res.json({msg: 'Category not found!'});
+    }
 }
