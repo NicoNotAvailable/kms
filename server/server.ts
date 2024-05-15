@@ -139,7 +139,7 @@ export function markDone(req: express.Request, res: express.Response): void {
             changedEntry = todo;
         }
     }
-    changedEntry.status == false ? changedEntry.status = true : changedEntry.status = false;
+    changedEntry.status = !changedEntry.status;
     res.status(200).json({msg:'Todo has been marked'});
 }
 
