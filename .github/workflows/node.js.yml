@@ -22,11 +22,11 @@ jobs:
       # Install dependencies for server
       - name: Install server dependencies
         run: npm install
-        working-directory: kms/server
+        working-directory: ../server
         # Install dependencies for client
       - name: Install client dependencies
         run: npm install
-        working-directory: kms/client
+        working-directory: ../client
       - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
