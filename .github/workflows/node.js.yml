@@ -19,19 +19,26 @@ jobs:
         node-version: [14.x, 16.x, 18.x]
 
     steps:
-      - name: Install dependencies
-        run: npm install
       - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
+      # Install dependencies for server
+      - name: Install server dependencies
+        run: npm install
+        working-directory: kms/server
+      # Install dependencies for client
+      - name: Install client dependencies
+        run: npm install
+        working-directory: kms/client
+      # Build and test steps (assuming they are executed from the root of the repository)
       - run: npm run build --if-present
       - run: npm test
       # Additional steps for testing and building the webpage
       - name: Transpile TypeScript to JavaScript
-        run: npx babel src --out-dir dist
+        run: npx babel kms/server/src --out-dir kms/server/dist
       - name: Test Transpiled Code
         run: npm run test-transpiled
 
