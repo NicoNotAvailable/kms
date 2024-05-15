@@ -10,6 +10,7 @@ import {
     Category,
     updateCat, deleteCat
 } from './server';
+import * as express from 'express';
 import { Request, Response } from 'express';
 
 let localTodoList:ToDoEntry[]= [];
