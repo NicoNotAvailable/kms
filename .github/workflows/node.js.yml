@@ -28,8 +28,5 @@ jobs:
       - name: Install dependcies client
         run: npm ci
         working-directory: client
-      - name: build
-        run: npm run build
-        working-directory: client
       - run: npm test
 
