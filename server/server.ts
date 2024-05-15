@@ -1,5 +1,5 @@
 import * as express from 'express';
-
+import { Express } from 'express';
 const app: express.Express = express();
 app.listen(8080);
 app.use("/", express.static(__dirname + "/../client"));
