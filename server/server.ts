@@ -64,7 +64,7 @@ function sendMainpage(req: express.Request, res: express.Response) {
     res.sendFile(`${__dirname}/client/index.html`);
 }
 
-function postTodo(req: express.Request, res: express.Response) {
+export function postTodo(req: express.Request, res: express.Response) {
     const title: string = req.body.title;
     const description: string = req.body.description;
     const priority: number = req.body.priority;
@@ -75,8 +75,7 @@ function postTodo(req: express.Request, res: express.Response) {
     } else {
         const newEntry = new ToDoEntry(title, description, priority);
         todoList.push(newEntry);
-        res.status(201);
-        res.json({message: "Task was created"});
+        res.status(201).json({message: "Task was created"});
     }
 }
 

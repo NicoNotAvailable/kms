@@ -8,23 +8,113 @@ import {
     categoryList,
     todoList,
     Category,
-    updateCat, deleteCat
+    updateCat, deleteCat, postTodo
 } from './server';
-import * as express from 'express';
+const express = require('express');
 import { Request, Response } from 'express';
+import { Server } from 'http';
+
 
 let localTodoList:ToDoEntry[]= [];
 let localCategoryList: Category[] = [];
 
+let server: Server;
+
+//const app = express();
+
+//Chasan
+beforeAll((done) => {
+    process.env.PORT = '8081';  //Port 8081 for Tests
+
+    const app = express();
+
+    server = app.listen(process.env.PORT, () => {
+        console.log(`Test server running on port ${process.env.PORT}`);
+        done();
+    });
+});
+
+afterAll((done) => {
+    server.close(done);
+});
+
 // Example test class using Jest
 describe('ToDoList', () => {
+
     // Example test case
-    test('testCreateGame', () => {
+    test('testCreateLocalToDo', () => {
         // Arrange
         const newEntry = new ToDoEntry("title", "description", 1);
         localTodoList.push(newEntry);
         expect(localTodoList.length).toBe(1);
     });
+
+    //Chasan
+    test('testCreateToDo', () => {
+        let newEntry = new ToDoEntry("testTitle", "testDescr", 1);
+        localTodoList.push(newEntry);
+        let id = newEntry.id.toString();
+
+        const mockReq = {
+            body: { title: newEntry.title, description: newEntry.description, status: newEntry.status, priority: newEntry.priority }
+        } as unknown as Request;
+
+        const mockRes = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn()
+        } as unknown as Response;
+
+
+        postTodo(mockReq, mockRes);
+
+        expect(mockRes.status).toHaveBeenCalledWith(201);
+    });
+
+    //Chasan
+    test('testCreateToDo-Fault-EmptyTitle', () => {
+        let newEntry = new ToDoEntry("", "testDescr", 1);
+        localTodoList.push(newEntry);
+        let id = newEntry.id.toString();
+
+        const mockReq = {
+            body: { title: newEntry.title, description: newEntry.description, status: newEntry.status, priority: newEntry.priority }
+        } as unknown as Request;
+
+        const mockRes = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn()
+        } as unknown as Response;
+
+
+        postTodo(mockReq, mockRes);
+
+
+        expect(mockRes.status).toHaveBeenCalledWith(400);
+    });
+
+    //Chasan
+    test('testCreateToDo-Fault-MissingTitle', () => {
+        let newEntry = new ToDoEntry("", "testDescr", 1);
+        localTodoList.push(newEntry);
+        let id = newEntry.id.toString();
+
+        const mockReq = {
+            body: { description: newEntry.description, status: newEntry.status, priority: newEntry.priority }
+        } as unknown as Request;
+
+        const mockRes = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn()
+        } as unknown as Response;
+
+
+        postTodo(mockReq, mockRes);
+
+
+        expect(mockRes.status).toHaveBeenCalledWith(400);
+    });
+
+
 
     //Annalena
     test('testUpdateToDo', () => {
@@ -72,6 +162,27 @@ describe('ToDoList', () => {
         setTimeout(() => {
             expect(localTodoList.length).toBe(0);
         }, 1000)
+    })
+
+    //Chasan
+    test('testCreateAndUpdateToDo', () => {
+        let newEntry = new ToDoEntry("", "testDescr", 1);
+        localTodoList.push(newEntry);
+        let id = newEntry.id.toString();
+
+        const mockReq = {
+            body: { description: newEntry.description, status: newEntry.status, priority: newEntry.priority }
+        } as unknown as Request;
+
+        const mockRes = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn()
+        } as unknown as Response;
+
+
+        postTodo(mockReq, mockRes);
+
+        expect(mockRes.status).toHaveBeenCalledWith(400);
     })
 
     //Nico
