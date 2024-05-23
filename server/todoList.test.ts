@@ -34,10 +34,6 @@ beforeAll((done) => {
     });
 });
 
-afterAll((done) => {
-    server.close(done);
-});
-
 // Example test class using Jest
 describe('ToDoList', () => {
 
@@ -233,6 +229,7 @@ describe('ToDoList', () => {
     test('testUpdateCat', async () => {
         let newEntry: Category = new Category("CategoryB");
         let id: number = newEntry.id;
+        localCategoryList.push(newEntry);
 
         const mockReq = {
             params: {id: id},
@@ -265,9 +262,13 @@ describe('ToDoList', () => {
             json: jest.fn()
         } as unknown as Response;
 
-        await deleteCat(categoryList, mockReq, mockRes);
+        await deleteCat(localCategoryList, mockReq, mockRes);
 
         expect(localCategoryList.length).toBe(0);
 
     })
+});
+
+afterAll((done) => {
+    server.close(done);
 });

@@ -6,9 +6,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteCat = exports.updateCat = exports.postCat = exports.markDone = exports.changeTodo = exports.deleteTodo = exports.postTodo = exports.categoryList = exports.todoList = exports.Category = exports.ToDoEntry = void 0;
 const express_1 = __importDefault(require("express"));
 const app = (0, express_1.default)();
+let server;
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
+server = app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+});
+process.on('exit', () => {
+    server.close();
 });
 app.use("/", express_1.default.static(__dirname + "/../client"));
 app.get("/", sendMainpage);

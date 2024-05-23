@@ -1,9 +1,15 @@
 import express from 'express';
+import {Server} from "http";
 
 const app: express.Express = express();
+let server: Server;
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
+server = app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+});
+
+process.on('exit', () => {
+    server.close();
 });
 
 app.use("/", express.static(__dirname + "/../client"));

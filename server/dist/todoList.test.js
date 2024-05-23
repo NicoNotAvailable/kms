@@ -25,9 +25,6 @@ beforeAll((done) => {
         done();
     });
 });
-afterAll((done) => {
-    server.close(done);
-});
 // Example test class using Jest
 (0, globals_1.describe)('ToDoList', () => {
     (0, globals_1.afterEach)(() => {
@@ -171,6 +168,7 @@ afterAll((done) => {
     (0, globals_1.test)('testUpdateCat', () => __awaiter(void 0, void 0, void 0, function* () {
         let newEntry = new server_1.Category("CategoryB");
         let id = newEntry.id;
+        localCategoryList.push(newEntry);
         const mockReq = {
             params: { id: id },
             body: { name: newEntry.name }
@@ -194,7 +192,10 @@ afterAll((done) => {
             status: jest.fn().mockReturnThis(),
             json: jest.fn()
         };
-        yield (0, server_1.deleteCat)(server_1.categoryList, mockReq, mockRes);
+        yield (0, server_1.deleteCat)(localCategoryList, mockReq, mockRes);
         expect(localCategoryList.length).toBe(0);
     }));
+});
+afterAll((done) => {
+    server.close(done);
 });
