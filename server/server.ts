@@ -8,10 +8,6 @@ server = app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
 
-process.on('exit', () => {
-    server.close();
-});
-
 app.use("/", express.static(__dirname + "/../client"));
 app.get("/", sendMainpage);
 app.use(express.json());

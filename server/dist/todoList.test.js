@@ -15,14 +15,28 @@ const express = require('express');
 let localTodoList = [];
 let localCategoryList = [];
 let server;
+let testServer;
 //const app = express();
 //Chasan
 beforeAll((done) => {
-    process.env.PORT = '8081'; //Port 8081 for Tests
+    process.env.PORT = '8081'; // Port 8081 for Tests
     const app = express();
-    server = app.listen(process.env.PORT, () => {
+    testServer = app.listen(process.env.PORT, () => {
         console.log(`Test server running on port ${process.env.PORT}`);
         done();
+    });
+    const serverApp = express();
+    server = serverApp.listen(8080, () => {
+        console.log(`Actual server running on port 8080`);
+    });
+});
+afterAll((done) => {
+    testServer.close(() => {
+        console.log('Test server closed');
+        server.close(() => {
+            console.log('Actual server closed');
+            done();
+        });
     });
 });
 // Example test class using Jest
@@ -195,7 +209,4 @@ beforeAll((done) => {
         yield (0, server_1.deleteCat)(localCategoryList, mockReq, mockRes);
         expect(localCategoryList.length).toBe(0);
     }));
-});
-afterAll((done) => {
-    server.close(done);
 });
