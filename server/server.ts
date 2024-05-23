@@ -12,8 +12,8 @@ app.use(express.json());
 
 app.get("/todo", getTodo);
 app.post("/todo", postTodo);
-app.delete("/todo/:id", deleteTodo);
-app.put("/todo/:id", changeTodo);
+app.delete("/todo/:id", (req, res) => deleteTodo(todoList, req, res));
+app.put("/todo/:id", (req, res) => changeTodo(todoList, req, res));
 app.patch("/todo/:id", markDone);
 
 app.post("/cat", postCat);
@@ -90,7 +90,7 @@ function getTodo(req: express.Request, res: express.Response) {
 }
 
 
-export function deleteTodo(req: express.Request, res: express.Response): void {
+export function deleteTodo(todoList: ToDoEntry[], req: any, res: any): void {
     let todoIndex: number = Number(req.params.id);
     let deletedEntry: ToDoEntry[];
     for (let i: number = 0; i < todoList.length; i++) {
@@ -108,7 +108,7 @@ export function deleteTodo(req: express.Request, res: express.Response): void {
     }
 }
 
-export function changeTodo(req: express.Request, res: express.Response): void {
+export function changeTodo(todoList: ToDoEntry[], req: any, res: any): void {
     let todoIndex: number = Number(req.params.id);
     let newTitle: string | undefined = req.body.title;
     let newDesc: string | undefined = req.body.description;

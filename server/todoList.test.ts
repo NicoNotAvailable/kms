@@ -138,18 +138,14 @@ describe('ToDoList', () => {
             json: jest.fn()
         } as unknown as Response;
 
-        await changeTodo(mockReq, mockRes);
+        await changeTodo(localTodoList, mockReq, mockRes);
 
-        setTimeout(() => {
-            expect(localTodoList[0].description).toBe(newDescription);
-        }, 1000);
-
-        console.log(localTodoList[0].description);
+        expect(localTodoList[0].description).toBe(newDescription);
     });
 
 
     //Annalena
-    test('testDeleteTodo', () => {
+    test('testDeleteTodo', async () => {
         let newEntry = new ToDoEntry("deleteThis", "Description", 1);
         localTodoList.push(newEntry);
         let id = newEntry.id.toString();
@@ -164,11 +160,9 @@ describe('ToDoList', () => {
             json: jest.fn()
         } as unknown as Response;
 
-        deleteTodo(mockReq, mockRes);
-
-        setTimeout(() => {
-            expect(localTodoList.length).toBe(0);
-        }, 1000)
+        await deleteTodo(localTodoList, mockReq, mockRes);
+        console.log(localTodoList)
+        expect(localTodoList.length).toBe(0);
     })
 
     //Chasan

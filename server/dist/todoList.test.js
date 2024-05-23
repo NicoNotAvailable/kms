@@ -99,14 +99,11 @@ afterAll((done) => {
             status: jest.fn().mockReturnThis(),
             json: jest.fn()
         };
-        yield (0, server_1.changeTodo)(mockReq, mockRes);
-        setTimeout(() => {
-            expect(localTodoList[0].description).toBe(newDescription);
-        }, 1000);
-        console.log(localTodoList[0].description);
+        yield (0, server_1.changeTodo)(localTodoList, mockReq, mockRes);
+        expect(localTodoList[0].description).toBe(newDescription);
     }));
     //Annalena
-    (0, globals_1.test)('testDeleteTodo', () => {
+    (0, globals_1.test)('testDeleteTodo', () => __awaiter(void 0, void 0, void 0, function* () {
         let newEntry = new server_1.ToDoEntry("deleteThis", "Description", 1);
         localTodoList.push(newEntry);
         let id = newEntry.id.toString();
@@ -118,11 +115,10 @@ afterAll((done) => {
             status: jest.fn().mockReturnThis(),
             json: jest.fn()
         };
-        (0, server_1.deleteTodo)(mockReq, mockRes);
-        setTimeout(() => {
-            expect(localTodoList.length).toBe(0);
-        }, 1000);
-    });
+        yield (0, server_1.deleteTodo)(localTodoList, mockReq, mockRes);
+        console.log(localTodoList);
+        expect(localTodoList.length).toBe(0);
+    }));
     //Chasan
     (0, globals_1.test)('testCreateAndUpdateToDo', () => {
         let newEntry = new server_1.ToDoEntry("", "testDescr", 1);

@@ -15,8 +15,8 @@ app.get("/", sendMainpage);
 app.use(express_1.default.json());
 app.get("/todo", getTodo);
 app.post("/todo", postTodo);
-app.delete("/todo/:id", deleteTodo);
-app.put("/todo/:id", changeTodo);
+app.delete("/todo/:id", (req, res) => deleteTodo(exports.todoList, req, res));
+app.put("/todo/:id", (req, res) => changeTodo(exports.todoList, req, res));
 app.patch("/todo/:id", markDone);
 app.post("/cat", postCat);
 app.put("/cat/:id", updateCat);
@@ -74,12 +74,12 @@ function getTodo(req, res) {
     res.status(200);
     res.json(exports.todoList);
 }
-function deleteTodo(req, res) {
+function deleteTodo(todoList, req, res) {
     let todoIndex = Number(req.params.id);
     let deletedEntry;
-    for (let i = 0; i < exports.todoList.length; i++) {
-        if (exports.todoList[i].id === todoIndex) {
-            exports.todoList.splice(i, 1);
+    for (let i = 0; i < todoList.length; i++) {
+        if (todoList[i].id === todoIndex) {
+            todoList.splice(i, 1);
             break;
         }
     }
@@ -93,13 +93,13 @@ function deleteTodo(req, res) {
     }
 }
 exports.deleteTodo = deleteTodo;
-function changeTodo(req, res) {
+function changeTodo(todoList, req, res) {
     let todoIndex = Number(req.params.id);
     let newTitle = req.body.title;
     let newDesc = req.body.description;
     let prio = Number(req.body.priority);
     let changedEntry;
-    for (const element of exports.todoList) {
+    for (const element of todoList) {
         if (element.id === todoIndex) {
             changedEntry = element;
             changedEntry.title = newTitle;
