@@ -134,7 +134,7 @@ afterAll((done) => {
         expect(mockRes.status).toHaveBeenCalledWith(400);
     });
     //Nico
-    (0, globals_1.test)('testCreateCategory', () => {
+    (0, globals_1.test)('testCreateCategory', () => __awaiter(void 0, void 0, void 0, function* () {
         let name = "SwagCategory";
         const mockReq = {
             body: { name: name }
@@ -143,11 +143,9 @@ afterAll((done) => {
             status: jest.fn().mockReturnThis(),
             json: jest.fn()
         };
-        (0, server_1.postCat)(mockReq, mockRes);
-        setTimeout(() => {
-            expect(server_1.categoryList.length).toBe(1);
-        }, 1000);
-    });
+        yield (0, server_1.postCat)(localCategoryList, mockReq, mockRes);
+        expect(localCategoryList.length).toBe(1);
+    }));
     (0, globals_1.test)('testMarkAsDone', () => __awaiter(void 0, void 0, void 0, function* () {
         let newEntry = new server_1.ToDoEntry("Mark this", "HEHHEHE im swag", 2);
         localTodoList.push(newEntry);
@@ -169,7 +167,7 @@ afterAll((done) => {
         expect(localTodoList[markedEntry].status).toBe(true);
     }));
     //Alex
-    (0, globals_1.test)('testUpdateCat', () => {
+    (0, globals_1.test)('testUpdateCat', () => __awaiter(void 0, void 0, void 0, function* () {
         let newEntry = new server_1.Category("CategoryB");
         let id = newEntry.id;
         const mockReq = {
@@ -180,12 +178,10 @@ afterAll((done) => {
             status: jest.fn().mockReturnThis(),
             json: jest.fn()
         };
-        (0, server_1.updateCat)(mockReq, mockRes);
-        setTimeout(() => {
-            expect(localCategoryList[0].name).toBe(newEntry.name);
-        }, 1000);
-    });
-    (0, globals_1.test)('testDeleteCategory', () => {
+        yield (0, server_1.updateCat)(localCategoryList, mockReq, mockRes);
+        expect(localCategoryList[0].name).toBe(newEntry.name);
+    }));
+    (0, globals_1.test)('testDeleteCategory', () => __awaiter(void 0, void 0, void 0, function* () {
         let newEntry = new server_1.Category("CategoryB");
         localCategoryList.push(newEntry);
         let id = newEntry.id.toString();
@@ -197,9 +193,7 @@ afterAll((done) => {
             status: jest.fn().mockReturnThis(),
             json: jest.fn()
         };
-        (0, server_1.deleteCat)(mockReq, mockRes);
-        setTimeout(() => {
-            expect(localCategoryList.length).toBe(0);
-        }, 1000);
-    });
+        yield (0, server_1.deleteCat)(server_1.categoryList, mockReq, mockRes);
+        expect(localCategoryList.length).toBe(0);
+    }));
 });

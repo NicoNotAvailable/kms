@@ -18,9 +18,9 @@ app.post("/todo", postTodo);
 app.delete("/todo/:id", (req, res) => deleteTodo(exports.todoList, req, res));
 app.put("/todo/:id", (req, res) => changeTodo(exports.todoList, req, res));
 app.patch("/todo/:id", (req, res) => markDone(exports.todoList, req, res));
-app.post("/cat", postCat);
-app.put("/cat/:id", updateCat);
-app.delete("/cat/:id", deleteCat);
+app.post("/cat", (req, res) => postCat(exports.categoryList, req, res));
+app.put("/cat/:id", (req, res) => updateCat(exports.categoryList, req, res));
+app.delete("/cat/:id", (req, res) => deleteCat(exports.categoryList, req, res));
 class ToDoEntry {
     constructor(title, description, priority) {
         this.id = incrementedIdTodo;
@@ -127,23 +127,23 @@ function markDone(todoList, req, res) {
     res.status(200).json({ msg: 'Todo has been marked' });
 }
 exports.markDone = markDone;
-function postCat(req, res) {
+function postCat(categoryList, req, res) {
     let name = req.body.name;
     if (name == undefined || name.trim().length == 0 || name === "") {
         res.status(400).json({ msg: "Name cannot be empty" });
     }
     else {
         const newCategory = new Category(name);
-        exports.categoryList.push(newCategory);
+        categoryList.push(newCategory);
         res.status(201).json({ msg: 'Creating Category went WHOOOP WHOOP' });
     }
 }
 exports.postCat = postCat;
-function updateCat(req, res) {
+function updateCat(categoryList, req, res) {
     let id = Number(req.params.id);
     let name = req.body.name;
     let changedEntry;
-    for (const element of exports.categoryList) {
+    for (const element of categoryList) {
         if (element.id === id) {
             changedEntry = element;
             changedEntry.name = name;
@@ -156,12 +156,12 @@ function updateCat(req, res) {
     res.json({ msg: 'Category not found!' });
 }
 exports.updateCat = updateCat;
-function deleteCat(req, res) {
+function deleteCat(categoryList, req, res) {
     let id = Number(req.params.id);
     let deletedEntry;
-    for (let i = 0; i < exports.categoryList.length; i++) {
-        if (exports.categoryList[i].id === id) {
-            exports.categoryList.splice(i, 1);
+    for (let i = 0; i < categoryList.length; i++) {
+        if (categoryList[i].id === id) {
+            categoryList.splice(i, 1);
             break;
         }
     }

@@ -185,21 +185,21 @@ describe('ToDoList', () => {
     })
 
     //Nico
-    test('testCreateCategory', () => {
+    test('testCreateCategory', async () => {
         let name: string = "SwagCategory";
 
         const mockReq = {
-            body: { name: name }
+            body: {name: name}
         } as unknown as Request;
         const mockRes = {
             status: jest.fn().mockReturnThis(),
             json: jest.fn()
         } as unknown as Response;
 
-        postCat(mockReq, mockRes);
-        setTimeout(() =>{
-            expect(categoryList.length).toBe(1);
-        }, 1000);
+        await postCat(localCategoryList, mockReq, mockRes);
+
+        expect(localCategoryList.length).toBe(1);
+
     })
 
     test('testMarkAsDone', async () => {
@@ -229,11 +229,11 @@ describe('ToDoList', () => {
     })
 
     //Alex
-    test('testUpdateCat', () => {
+    test('testUpdateCat', async () => {
         let newEntry: Category = new Category("CategoryB");
         let id: number = newEntry.id;
 
-        const mockReq =  {
+        const mockReq = {
             params: {id: id},
             body: {name: newEntry.name}
         } as unknown as Request;
@@ -243,21 +243,20 @@ describe('ToDoList', () => {
             json: jest.fn()
         } as unknown as Response;
 
-        updateCat(mockReq, mockRes);
+        await updateCat(localCategoryList, mockReq, mockRes);
 
-        setTimeout(() =>{
-            expect(localCategoryList[0].name).toBe(newEntry.name);
-        }, 1000);
+        expect(localCategoryList[0].name).toBe(newEntry.name);
+
     });
 
-    test('testDeleteCategory', () => {
+    test('testDeleteCategory', async () => {
         let newEntry: Category = new Category("CategoryB");
         localCategoryList.push(newEntry);
         let id = newEntry.id.toString();
 
         const mockReq = {
-            params: { id: id },
-            body: { name: newEntry.name }
+            params: {id: id},
+            body: {name: newEntry.name}
         } as unknown as Request;
 
         const mockRes = {
@@ -265,10 +264,9 @@ describe('ToDoList', () => {
             json: jest.fn()
         } as unknown as Response;
 
-        deleteCat(mockReq, mockRes);
+        await deleteCat(categoryList, mockReq, mockRes);
 
-        setTimeout(() => {
-            expect(localCategoryList.length).toBe(0);
-        }, 1000)
+        expect(localCategoryList.length).toBe(0);
+
     })
 });

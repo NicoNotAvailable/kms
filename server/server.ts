@@ -16,9 +16,9 @@ app.delete("/todo/:id", (req, res) => deleteTodo(todoList, req, res));
 app.put("/todo/:id", (req, res) => changeTodo(todoList, req, res));
 app.patch("/todo/:id", (req, res) => markDone(todoList, req, res));
 
-app.post("/cat", postCat);
-app.put("/cat/:id", updateCat);
-app.delete("/cat/:id", deleteCat);
+app.post("/cat", (req, res) => postCat(categoryList, req, res));
+app.put("/cat/:id", (req, res) => updateCat(categoryList, req, res));
+app.delete("/cat/:id", (req, res) => deleteCat(categoryList, req, res));
 
 export class ToDoEntry {
     id: number;
@@ -146,7 +146,7 @@ export function markDone(todoList: ToDoEntry[], req: any, res: any): void {
     res.status(200).json({msg:'Todo has been marked'});
 }
 
-export function postCat(req: express.Request, res: express.Response): void {
+export function postCat(categoryList: Category[], req: express.Request, res: express.Response): void {
     let name: string = req.body.name;
 
     if (name == undefined || name.trim().length == 0 || name === ""){
@@ -158,7 +158,7 @@ export function postCat(req: express.Request, res: express.Response): void {
     }
 }
 
-export function updateCat(req: express.Request, res: express.Response) {
+export function updateCat(categoryList: Category[], req: express.Request, res: express.Response) {
     let id: number = Number(req.params.id);
     let name: string = req.body.name
 
@@ -177,7 +177,7 @@ export function updateCat(req: express.Request, res: express.Response) {
     res.json({ msg: 'Category not found!' });
 }
 
-export function deleteCat(req: express.Request, res: express.Response) {
+export function deleteCat(categoryList: Category[], req: express.Request, res: express.Response) {
     let id: number = Number(req.params.id);
     let deletedEntry: Category[];
     for (let i: number = 0; i < categoryList.length; i++) {
