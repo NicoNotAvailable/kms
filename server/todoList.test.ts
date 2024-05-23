@@ -124,7 +124,6 @@ describe('ToDoList', () => {
     test('testUpdateToDo', async () => {
         let newEntry = new ToDoEntry("changeThis", "DescriptionA", 1);
         localTodoList.push(newEntry);
-
         let newDescription = 'DescriptionB';
         let id = newEntry.id.toString();
 
@@ -139,7 +138,6 @@ describe('ToDoList', () => {
         } as unknown as Response;
 
         await changeTodo(localTodoList, mockReq, mockRes);
-
         expect(localTodoList[0].description).toBe(newDescription);
     });
 
@@ -161,7 +159,7 @@ describe('ToDoList', () => {
         } as unknown as Response;
 
         await deleteTodo(localTodoList, mockReq, mockRes);
-        console.log(localTodoList)
+
         expect(localTodoList.length).toBe(0);
     })
 
@@ -204,9 +202,9 @@ describe('ToDoList', () => {
         }, 1000);
     })
 
-    test('testMarkAsDone', () =>{
+    test('testMarkAsDone', async () => {
         let newEntry: ToDoEntry = new ToDoEntry("Mark this", "HEHHEHE im swag", 2);
-        todoList.push(newEntry);
+        localTodoList.push(newEntry);
         let id: number = newEntry.id;
 
         const mockReq = {
@@ -218,17 +216,16 @@ describe('ToDoList', () => {
             json: jest.fn()
         } as unknown as Response;
 
-        markDone(mockReq, mockRes);
-        let markedEntry: number;
-        for(let i: number = 0; i<todoList.length; i++){
-            if (todoList[i].id == id){
+        await markDone(localTodoList, mockReq, mockRes);
+        let markedEntry = 0;
+        for (let i: number = 0; i < localTodoList.length; i++) {
+            if (localTodoList[i].id == id) {
                 markedEntry = i;
             }
         }
 
-        setTimeout(() =>{
-            expect(todoList[markedEntry].status).toBe(true);
-        }, 1000);
+        expect(localTodoList[markedEntry].status).toBe(true);
+
     })
 
     //Alex

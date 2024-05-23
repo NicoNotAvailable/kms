@@ -17,7 +17,7 @@ app.get("/todo", getTodo);
 app.post("/todo", postTodo);
 app.delete("/todo/:id", (req, res) => deleteTodo(exports.todoList, req, res));
 app.put("/todo/:id", (req, res) => changeTodo(exports.todoList, req, res));
-app.patch("/todo/:id", markDone);
+app.patch("/todo/:id", (req, res) => markDone(exports.todoList, req, res));
 app.post("/cat", postCat);
 app.put("/cat/:id", updateCat);
 app.delete("/cat/:id", deleteCat);
@@ -115,10 +115,10 @@ function changeTodo(todoList, req, res) {
     res.json({ msg: 'Todo Entry not found!' });
 }
 exports.changeTodo = changeTodo;
-function markDone(req, res) {
+function markDone(todoList, req, res) {
     let todoIndex = Number(req.params.id);
     let changedEntry;
-    for (const todo of exports.todoList) {
+    for (const todo of todoList) {
         if (todo.id === todoIndex) {
             changedEntry = todo;
         }

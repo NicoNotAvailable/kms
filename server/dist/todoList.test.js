@@ -116,7 +116,6 @@ afterAll((done) => {
             json: jest.fn()
         };
         yield (0, server_1.deleteTodo)(localTodoList, mockReq, mockRes);
-        console.log(localTodoList);
         expect(localTodoList.length).toBe(0);
     }));
     //Chasan
@@ -149,9 +148,9 @@ afterAll((done) => {
             expect(server_1.categoryList.length).toBe(1);
         }, 1000);
     });
-    (0, globals_1.test)('testMarkAsDone', () => {
+    (0, globals_1.test)('testMarkAsDone', () => __awaiter(void 0, void 0, void 0, function* () {
         let newEntry = new server_1.ToDoEntry("Mark this", "HEHHEHE im swag", 2);
-        server_1.todoList.push(newEntry);
+        localTodoList.push(newEntry);
         let id = newEntry.id;
         const mockReq = {
             params: { id: id }
@@ -160,17 +159,15 @@ afterAll((done) => {
             status: jest.fn().mockReturnThis(),
             json: jest.fn()
         };
-        (0, server_1.markDone)(mockReq, mockRes);
-        let markedEntry;
-        for (let i = 0; i < server_1.todoList.length; i++) {
-            if (server_1.todoList[i].id == id) {
+        yield (0, server_1.markDone)(localTodoList, mockReq, mockRes);
+        let markedEntry = 0;
+        for (let i = 0; i < localTodoList.length; i++) {
+            if (localTodoList[i].id == id) {
                 markedEntry = i;
             }
         }
-        setTimeout(() => {
-            expect(server_1.todoList[markedEntry].status).toBe(true);
-        }, 1000);
-    });
+        expect(localTodoList[markedEntry].status).toBe(true);
+    }));
     //Alex
     (0, globals_1.test)('testUpdateCat', () => {
         let newEntry = new server_1.Category("CategoryB");
