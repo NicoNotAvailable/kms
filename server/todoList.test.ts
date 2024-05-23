@@ -43,6 +43,7 @@ describe('ToDoList', () => {
 
     afterEach(() => {
         localTodoList = [];
+        localCategoryList = [];
     });
 
     // Example test case

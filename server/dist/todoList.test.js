@@ -32,6 +32,7 @@ afterAll((done) => {
 (0, globals_1.describe)('ToDoList', () => {
     (0, globals_1.afterEach)(() => {
         localTodoList = [];
+        localCategoryList = [];
     });
     // Example test case
     (0, globals_1.test)('testCreateLocalToDo', () => {
