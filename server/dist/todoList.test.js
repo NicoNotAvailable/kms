@@ -1,43 +1,29 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const globals_1 = require("@jest/globals");
 const server_1 = require("./server");
 const express = require('express');
+const http_1 = require("http");
+let server = http_1.Server;
 let localTodoList = [];
 let localCategoryList = [];
-let server;
-let testServer;
 //const app = express();
 //Chasan
 beforeAll((done) => {
     process.env.PORT = '8081'; // Port 8081 for Tests
     const app = express();
-    testServer = app.listen(process.env.PORT, () => {
+    server = app.listen(process.env.PORT, () => {
         console.log(`Test server running on port ${process.env.PORT}`);
         done();
     });
-    const serverApp = express();
-    server = serverApp.listen(8080, () => {
-        console.log(`Actual server running on port 8080`);
-    });
 });
 afterAll((done) => {
-    testServer.close(() => {
-        console.log('Test server closed');
+    if (server) {
         server.close(() => {
-            console.log('Actual server closed');
+            console.log('Test server closed');
             done();
         });
-    });
+    }
 });
 // Example test class using Jest
 (0, globals_1.describe)('ToDoList', () => {
@@ -56,7 +42,6 @@ afterAll((done) => {
     (0, globals_1.test)('testCreateToDo', () => {
         let newEntry = new server_1.ToDoEntry("testTitle", "testDescr", 1);
         localTodoList.push(newEntry);
-        let id = newEntry.id.toString();
         const mockReq = {
             body: { title: newEntry.title, description: newEntry.description, status: newEntry.status, priority: newEntry.priority }
         };
@@ -71,7 +56,6 @@ afterAll((done) => {
     (0, globals_1.test)('testCreateToDo-Fault-EmptyTitle', () => {
         let newEntry = new server_1.ToDoEntry("", "testDescr", 1);
         localTodoList.push(newEntry);
-        let id = newEntry.id.toString();
         const mockReq = {
             body: { title: newEntry.title, description: newEntry.description, status: newEntry.status, priority: newEntry.priority }
         };
@@ -86,7 +70,6 @@ afterAll((done) => {
     (0, globals_1.test)('testCreateToDo-Fault-MissingTitle', () => {
         let newEntry = new server_1.ToDoEntry("", "testDescr", 1);
         localTodoList.push(newEntry);
-        let id = newEntry.id.toString();
         const mockReq = {
             body: { description: newEntry.description, status: newEntry.status, priority: newEntry.priority }
         };
@@ -98,7 +81,7 @@ afterAll((done) => {
         expect(mockRes.status).toHaveBeenCalledWith(400);
     });
     //Annalena
-    (0, globals_1.test)('testUpdateToDo', () => __awaiter(void 0, void 0, void 0, function* () {
+    (0, globals_1.test)('testUpdateToDo', () => {
         let newEntry = new server_1.ToDoEntry("changeThis", "DescriptionA", 1);
         localTodoList.push(newEntry);
         let newDescription = 'DescriptionB';
@@ -111,11 +94,11 @@ afterAll((done) => {
             status: jest.fn().mockReturnThis(),
             json: jest.fn()
         };
-        yield (0, server_1.changeTodo)(localTodoList, mockReq, mockRes);
+        (0, server_1.changeTodo)(localTodoList, mockReq, mockRes);
         expect(localTodoList[0].description).toBe(newDescription);
-    }));
+    });
     //Annalena
-    (0, globals_1.test)('testDeleteTodo', () => __awaiter(void 0, void 0, void 0, function* () {
+    (0, globals_1.test)('testDeleteTodo', () => {
         let newEntry = new server_1.ToDoEntry("deleteThis", "Description", 1);
         localTodoList.push(newEntry);
         let id = newEntry.id.toString();
@@ -127,26 +110,11 @@ afterAll((done) => {
             status: jest.fn().mockReturnThis(),
             json: jest.fn()
         };
-        yield (0, server_1.deleteTodo)(localTodoList, mockReq, mockRes);
+        (0, server_1.deleteTodo)(localTodoList, mockReq, mockRes);
         expect(localTodoList.length).toBe(0);
-    }));
-    //Chasan
-    (0, globals_1.test)('testCreateAndUpdateToDo', () => {
-        let newEntry = new server_1.ToDoEntry("", "testDescr", 1);
-        localTodoList.push(newEntry);
-        let id = newEntry.id.toString();
-        const mockReq = {
-            body: { description: newEntry.description, status: newEntry.status, priority: newEntry.priority }
-        };
-        const mockRes = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn()
-        };
-        (0, server_1.postTodo)(mockReq, mockRes);
-        expect(mockRes.status).toHaveBeenCalledWith(400);
     });
     //Nico
-    (0, globals_1.test)('testCreateCategory', () => __awaiter(void 0, void 0, void 0, function* () {
+    (0, globals_1.test)('testCreateCategory', () => {
         let name = "SwagCategory";
         const mockReq = {
             body: { name: name }
@@ -155,10 +123,10 @@ afterAll((done) => {
             status: jest.fn().mockReturnThis(),
             json: jest.fn()
         };
-        yield (0, server_1.postCat)(localCategoryList, mockReq, mockRes);
+        (0, server_1.postCat)(localCategoryList, mockReq, mockRes);
         expect(localCategoryList.length).toBe(1);
-    }));
-    (0, globals_1.test)('testMarkAsDone', () => __awaiter(void 0, void 0, void 0, function* () {
+    });
+    (0, globals_1.test)('testMarkAsDone', () => {
         let newEntry = new server_1.ToDoEntry("Mark this", "HEHHEHE im swag", 2);
         localTodoList.push(newEntry);
         let id = newEntry.id;
@@ -169,7 +137,7 @@ afterAll((done) => {
             status: jest.fn().mockReturnThis(),
             json: jest.fn()
         };
-        yield (0, server_1.markDone)(localTodoList, mockReq, mockRes);
+        (0, server_1.markDone)(localTodoList, mockReq, mockRes);
         let markedEntry = 0;
         for (let i = 0; i < localTodoList.length; i++) {
             if (localTodoList[i].id == id) {
@@ -177,9 +145,9 @@ afterAll((done) => {
             }
         }
         expect(localTodoList[markedEntry].status).toBe(true);
-    }));
+    });
     //Alex
-    (0, globals_1.test)('testUpdateCat', () => __awaiter(void 0, void 0, void 0, function* () {
+    (0, globals_1.test)('testUpdateCat', () => {
         let newEntry = new server_1.Category("CategoryB");
         let id = newEntry.id;
         localCategoryList.push(newEntry);
@@ -191,10 +159,10 @@ afterAll((done) => {
             status: jest.fn().mockReturnThis(),
             json: jest.fn()
         };
-        yield (0, server_1.updateCat)(localCategoryList, mockReq, mockRes);
+        (0, server_1.updateCat)(localCategoryList, mockReq, mockRes);
         expect(localCategoryList[0].name).toBe(newEntry.name);
-    }));
-    (0, globals_1.test)('testDeleteCategory', () => __awaiter(void 0, void 0, void 0, function* () {
+    });
+    (0, globals_1.test)('testDeleteCategory', () => {
         let newEntry = new server_1.Category("CategoryB");
         localCategoryList.push(newEntry);
         let id = newEntry.id.toString();
@@ -206,7 +174,7 @@ afterAll((done) => {
             status: jest.fn().mockReturnThis(),
             json: jest.fn()
         };
-        yield (0, server_1.deleteCat)(localCategoryList, mockReq, mockRes);
+        (0, server_1.deleteCat)(localCategoryList, mockReq, mockRes);
         expect(localCategoryList.length).toBe(0);
-    }));
+    });
 });

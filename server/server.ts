@@ -3,10 +3,12 @@ import {Server} from "http";
 
 const app: express.Express = express();
 let server: Server;
-const PORT = process.env.PORT || 8080;
-server = app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+const PORT = process.env.PORT ?? 8080;
+if (process.env.TEST_MODE !== 'true') {
+    server = app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}
 
 app.use("/", express.static(__dirname + "/../client"));
 app.get("/", sendMainpage);
@@ -55,8 +57,8 @@ export class Category{
 let incrementedIdTodo: number = 0;
 let incrementedIdCat: number = 0;
 
-export let todoList: ToDoEntry[] = [];
-export let categoryList: Category[] = [];
+let todoList: ToDoEntry[] = [];
+let categoryList: Category[] = [];
 let todo1 = new ToDoEntry('Finish project', 'Complete the final report and submit it.', 2);
 let todo2 = new ToDoEntry('Buy groceries', 'Get milk, eggs, bread, and vegetables.', 1);
 let todo3 = new ToDoEntry('Go for a run', 'Run for at least 30 minutes.', 3);
@@ -94,7 +96,7 @@ function getTodo(req: express.Request, res: express.Response) {
 
 export function deleteTodo(todoList: ToDoEntry[], req: any, res: any): void {
     let todoIndex: number = Number(req.params.id);
-    let deletedEntry: ToDoEntry[];
+    let deletedEntry: ToDoEntry | undefined;
     for (let i: number = 0; i < todoList.length; i++) {
         if (todoList[i].id === todoIndex) {
             todoList.splice(i, 1);
@@ -121,12 +123,15 @@ export function changeTodo(todoList: ToDoEntry[], req: any, res: any): void {
     for (const element of todoList) {
         if (element.id === todoIndex) {
             changedEntry = element;
-            changedEntry.title = newTitle;
-            changedEntry.description = newDesc;
+            if (newTitle !== undefined) {
+                changedEntry.title = newTitle;
+            }
+            if (newDesc !== undefined) {
+                changedEntry.description = newDesc;
+            }
             changedEntry.priority = prio;
             res.status(200);
             res.json({msg: 'Task is changed successfully', todo: changedEntry});
-            console.log(changedEntry.description);
             return;
         }
     }
@@ -137,15 +142,20 @@ export function changeTodo(todoList: ToDoEntry[], req: any, res: any): void {
 
 export function markDone(todoList: ToDoEntry[], req: any, res: any): void {
     let todoIndex: number = Number(req.params.id);
-    let changedEntry: ToDoEntry;
+    let changedEntry: ToDoEntry | undefined;
 
     for (const todo of todoList){
         if(todo.id === todoIndex){
             changedEntry = todo;
+            break;
         }
     }
-    changedEntry.status = !changedEntry.status;
-    res.status(200).json({msg:'Todo has been marked'});
+    if (changedEntry !== undefined) {
+        changedEntry.status = !changedEntry.status;
+        res.status(200).json({ msg: 'Todo has been marked', todo: changedEntry });
+    } else {
+        res.status(404).json({ msg: 'Todo not found' });
+    }
 }
 
 export function postCat(categoryList: Category[], req: express.Request, res: express.Response): void {
@@ -181,7 +191,7 @@ export function updateCat(categoryList: Category[], req: express.Request, res: e
 
 export function deleteCat(categoryList: Category[], req: express.Request, res: express.Response) {
     let id: number = Number(req.params.id);
-    let deletedEntry: Category[];
+    let deletedEntry: Category[] | undefined;
     for (let i: number = 0; i < categoryList.length; i++) {
         if (categoryList[i].id === id) {
             categoryList.splice(i, 1);

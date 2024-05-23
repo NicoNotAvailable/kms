@@ -5,8 +5,6 @@ import {
     deleteTodo,
     markDone,
     postCat,
-    categoryList,
-    todoList,
     Category,
     updateCat, deleteCat, postTodo
 } from './server';
@@ -15,11 +13,10 @@ import { Request, Response } from 'express';
 import { Server } from 'http';
 
 
+let server = Server;
 let localTodoList:ToDoEntry[]= [];
 let localCategoryList: Category[] = [];
 
-let server: Server;
-let testServer: Server;
 
 //const app = express();
 
@@ -29,26 +26,19 @@ beforeAll((done) => {
 
     const app = express();
 
-    testServer = app.listen(process.env.PORT, () => {
+    server = app.listen(process.env.PORT, () => {
         console.log(`Test server running on port ${process.env.PORT}`);
         done();
-    });
-
-    const serverApp = express();
-
-    server = serverApp.listen(8080, () => {
-        console.log(`Actual server running on port 8080`);
     });
 });
 
 afterAll((done) => {
-    testServer.close(() => {
-        console.log('Test server closed');
-        server.close(() => {
-            console.log('Actual server closed');
+    if (server) {
+        (server as any).close(() => {
+            console.log('Test server closed');
             done();
         });
-    });
+    }
 });
 
 // Example test class using Jest
@@ -71,7 +61,6 @@ describe('ToDoList', () => {
     test('testCreateToDo', () => {
         let newEntry = new ToDoEntry("testTitle", "testDescr", 1);
         localTodoList.push(newEntry);
-        let id = newEntry.id.toString();
 
         const mockReq = {
             body: { title: newEntry.title, description: newEntry.description, status: newEntry.status, priority: newEntry.priority }
@@ -92,7 +81,6 @@ describe('ToDoList', () => {
     test('testCreateToDo-Fault-EmptyTitle', () => {
         let newEntry = new ToDoEntry("", "testDescr", 1);
         localTodoList.push(newEntry);
-        let id = newEntry.id.toString();
 
         const mockReq = {
             body: { title: newEntry.title, description: newEntry.description, status: newEntry.status, priority: newEntry.priority }
@@ -114,7 +102,6 @@ describe('ToDoList', () => {
     test('testCreateToDo-Fault-MissingTitle', () => {
         let newEntry = new ToDoEntry("", "testDescr", 1);
         localTodoList.push(newEntry);
-        let id = newEntry.id.toString();
 
         const mockReq = {
             body: { description: newEntry.description, status: newEntry.status, priority: newEntry.priority }
@@ -135,7 +122,7 @@ describe('ToDoList', () => {
 
 
     //Annalena
-    test('testUpdateToDo', async () => {
+    test('testUpdateToDo', () => {
         let newEntry = new ToDoEntry("changeThis", "DescriptionA", 1);
         localTodoList.push(newEntry);
         let newDescription = 'DescriptionB';
@@ -151,13 +138,13 @@ describe('ToDoList', () => {
             json: jest.fn()
         } as unknown as Response;
 
-        await changeTodo(localTodoList, mockReq, mockRes);
+        changeTodo(localTodoList, mockReq, mockRes);
         expect(localTodoList[0].description).toBe(newDescription);
     });
 
 
     //Annalena
-    test('testDeleteTodo', async () => {
+    test('testDeleteTodo', () => {
         let newEntry = new ToDoEntry("deleteThis", "Description", 1);
         localTodoList.push(newEntry);
         let id = newEntry.id.toString();
@@ -172,34 +159,13 @@ describe('ToDoList', () => {
             json: jest.fn()
         } as unknown as Response;
 
-        await deleteTodo(localTodoList, mockReq, mockRes);
+        deleteTodo(localTodoList, mockReq, mockRes);
 
         expect(localTodoList.length).toBe(0);
     })
 
-    //Chasan
-    test('testCreateAndUpdateToDo', () => {
-        let newEntry = new ToDoEntry("", "testDescr", 1);
-        localTodoList.push(newEntry);
-        let id = newEntry.id.toString();
-
-        const mockReq = {
-            body: { description: newEntry.description, status: newEntry.status, priority: newEntry.priority }
-        } as unknown as Request;
-
-        const mockRes = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn()
-        } as unknown as Response;
-
-
-        postTodo(mockReq, mockRes);
-
-        expect(mockRes.status).toHaveBeenCalledWith(400);
-    })
-
     //Nico
-    test('testCreateCategory', async () => {
+    test('testCreateCategory', () => {
         let name: string = "SwagCategory";
 
         const mockReq = {
@@ -210,13 +176,13 @@ describe('ToDoList', () => {
             json: jest.fn()
         } as unknown as Response;
 
-        await postCat(localCategoryList, mockReq, mockRes);
+        postCat(localCategoryList, mockReq, mockRes);
 
         expect(localCategoryList.length).toBe(1);
 
     })
 
-    test('testMarkAsDone', async () => {
+    test('testMarkAsDone', () => {
         let newEntry: ToDoEntry = new ToDoEntry("Mark this", "HEHHEHE im swag", 2);
         localTodoList.push(newEntry);
         let id: number = newEntry.id;
@@ -230,7 +196,7 @@ describe('ToDoList', () => {
             json: jest.fn()
         } as unknown as Response;
 
-        await markDone(localTodoList, mockReq, mockRes);
+        markDone(localTodoList, mockReq, mockRes);
         let markedEntry = 0;
         for (let i: number = 0; i < localTodoList.length; i++) {
             if (localTodoList[i].id == id) {
@@ -243,7 +209,7 @@ describe('ToDoList', () => {
     })
 
     //Alex
-    test('testUpdateCat', async () => {
+    test('testUpdateCat', () => {
         let newEntry: Category = new Category("CategoryB");
         let id: number = newEntry.id;
         localCategoryList.push(newEntry);
@@ -258,13 +224,13 @@ describe('ToDoList', () => {
             json: jest.fn()
         } as unknown as Response;
 
-        await updateCat(localCategoryList, mockReq, mockRes);
+        updateCat(localCategoryList, mockReq, mockRes);
 
         expect(localCategoryList[0].name).toBe(newEntry.name);
 
     });
 
-    test('testDeleteCategory', async () => {
+    test('testDeleteCategory', () => {
         let newEntry: Category = new Category("CategoryB");
         localCategoryList.push(newEntry);
         let id = newEntry.id.toString();
@@ -279,7 +245,7 @@ describe('ToDoList', () => {
             json: jest.fn()
         } as unknown as Response;
 
-        await deleteCat(localCategoryList, mockReq, mockRes);
+        deleteCat(localCategoryList, mockReq, mockRes);
 
         expect(localCategoryList.length).toBe(0);
 

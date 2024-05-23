@@ -2,29 +2,29 @@
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteCat = exports.updateCat = exports.postCat = exports.markDone = exports.changeTodo = exports.deleteTodo = exports.postTodo = exports.categoryList = exports.todoList = exports.Category = exports.ToDoEntry = void 0;
+exports.deleteCat = exports.updateCat = exports.postCat = exports.markDone = exports.changeTodo = exports.deleteTodo = exports.postTodo = exports.Category = exports.ToDoEntry = void 0;
 const express_1 = __importDefault(require("express"));
 const app = (0, express_1.default)();
 let server;
-const PORT = process.env.PORT || 8080;
-server = app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
-process.on('exit', () => {
-    server.close();
-});
+const PORT = (_a = process.env.PORT) !== null && _a !== void 0 ? _a : 8080;
+if (process.env.TEST_MODE !== 'true') {
+    server = app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}
 app.use("/", express_1.default.static(__dirname + "/../client"));
 app.get("/", sendMainpage);
 app.use(express_1.default.json());
 app.get("/todo", getTodo);
 app.post("/todo", postTodo);
-app.delete("/todo/:id", (req, res) => deleteTodo(exports.todoList, req, res));
-app.put("/todo/:id", (req, res) => changeTodo(exports.todoList, req, res));
-app.patch("/todo/:id", (req, res) => markDone(exports.todoList, req, res));
-app.post("/cat", (req, res) => postCat(exports.categoryList, req, res));
-app.put("/cat/:id", (req, res) => updateCat(exports.categoryList, req, res));
-app.delete("/cat/:id", (req, res) => deleteCat(exports.categoryList, req, res));
+app.delete("/todo/:id", (req, res) => deleteTodo(todoList, req, res));
+app.put("/todo/:id", (req, res) => changeTodo(todoList, req, res));
+app.patch("/todo/:id", (req, res) => markDone(todoList, req, res));
+app.post("/cat", (req, res) => postCat(categoryList, req, res));
+app.put("/cat/:id", (req, res) => updateCat(categoryList, req, res));
+app.delete("/cat/:id", (req, res) => deleteCat(categoryList, req, res));
 class ToDoEntry {
     constructor(title, description, priority) {
         this.id = incrementedIdTodo;
@@ -47,13 +47,13 @@ class Category {
 exports.Category = Category;
 let incrementedIdTodo = 0;
 let incrementedIdCat = 0;
-exports.todoList = [];
-exports.categoryList = [];
+let todoList = [];
+let categoryList = [];
 let todo1 = new ToDoEntry('Finish project', 'Complete the final report and submit it.', 2);
 let todo2 = new ToDoEntry('Buy groceries', 'Get milk, eggs, bread, and vegetables.', 1);
 let todo3 = new ToDoEntry('Go for a run', 'Run for at least 30 minutes.', 3);
 // Adding dummy data to todoList array
-exports.todoList.push(todo1, todo2, todo3);
+todoList.push(todo1, todo2, todo3);
 function sendMainpage(req, res) {
     res.status(200);
     res.sendFile(`${__dirname}/client/index.html`);
@@ -68,15 +68,15 @@ function postTodo(req, res) {
     }
     else {
         const newEntry = new ToDoEntry(title, description, priority);
-        exports.todoList.push(newEntry);
+        todoList.push(newEntry);
         res.status(201).json({ message: "Task was created" });
     }
 }
 exports.postTodo = postTodo;
 function getTodo(req, res) {
-    console.log(exports.todoList);
+    console.log(todoList);
     res.status(200);
-    res.json(exports.todoList);
+    res.json(todoList);
 }
 function deleteTodo(todoList, req, res) {
     let todoIndex = Number(req.params.id);
@@ -106,12 +106,15 @@ function changeTodo(todoList, req, res) {
     for (const element of todoList) {
         if (element.id === todoIndex) {
             changedEntry = element;
-            changedEntry.title = newTitle;
-            changedEntry.description = newDesc;
+            if (newTitle !== undefined) {
+                changedEntry.title = newTitle;
+            }
+            if (newDesc !== undefined) {
+                changedEntry.description = newDesc;
+            }
             changedEntry.priority = prio;
             res.status(200);
             res.json({ msg: 'Task is changed successfully', todo: changedEntry });
-            console.log(changedEntry.description);
             return;
         }
     }
@@ -125,10 +128,16 @@ function markDone(todoList, req, res) {
     for (const todo of todoList) {
         if (todo.id === todoIndex) {
             changedEntry = todo;
+            break;
         }
     }
-    changedEntry.status = !changedEntry.status;
-    res.status(200).json({ msg: 'Todo has been marked' });
+    if (changedEntry !== undefined) {
+        changedEntry.status = !changedEntry.status;
+        res.status(200).json({ msg: 'Todo has been marked', todo: changedEntry });
+    }
+    else {
+        res.status(404).json({ msg: 'Todo not found' });
+    }
 }
 exports.markDone = markDone;
 function postCat(categoryList, req, res) {
