@@ -8,7 +8,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "TEST_MODE=true jest && unset TEST_MODE",
+    "test": "cross-env TEST_MODE=true jest --runInBand --detectOpenHandles",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
@@ -27,6 +27,7 @@
     "@babel/preset-typescript": "^7.24.1",
     "@types/jest": "^29.5.12",
     "babel-jest": "^29.7.0",
+    "cross-env": "^7.0.3",
     "jest": "^29.7.0"
   }
 }
