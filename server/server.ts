@@ -98,7 +98,6 @@ export function deleteTodo(todoList: ToDoEntry[], req: any, res: any): void {
   const todoIndex: number = Number(req.params.id);
   let deletedEntry: ToDoEntry | undefined;
 
-  console.log('Test');
   for (let i: number = 0; i < todoList.length; i++) {
     if (todoList[i].id === todoIndex) {
       todoList.splice(i, 1);
