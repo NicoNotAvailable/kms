@@ -1,253 +1,264 @@
 import { describe, test, afterEach } from '@jest/globals';
 import {
-    ToDoEntry,
-    changeTodo,
-    deleteTodo,
-    markDone,
-    postCat,
-    Category,
-    updateCat, deleteCat, postTodo
+  ToDoEntry,
+  changeTodo,
+  deleteTodo,
+  markDone,
+  postCat,
+  Category,
+  updateCat,
+  deleteCat,
+  postTodo,
 } from './server';
 const express = require('express');
 import { Request, Response } from 'express';
 import { Server } from 'http';
 
-
 let server = Server;
-let localTodoList:ToDoEntry[]= [];
+let localTodoList: ToDoEntry[] = [];
 let localCategoryList: Category[] = [];
-
 
 //const app = express();
 
 //Chasan
 beforeAll((done) => {
-    process.env.PORT = '8081';  // Port 8081 for Tests
+  process.env.PORT = '8081'; // Port 8081 for Tests
 
-    const app = express();
+  const app = express();
 
-    server = app.listen(process.env.PORT, () => {
-        console.log(`Test server running on port ${process.env.PORT}`);
-        done();
-    });
+  server = app.listen(process.env.PORT, () => {
+    console.log(`Test server running on port ${process.env.PORT}`);
+    done();
+  });
 });
 
 afterAll((done) => {
-    if (server) {
-        (server as any).close(() => {
-            console.log('Test server closed');
-            done();
-        });
-    }
+  if (server) {
+    (server as any).close(() => {
+      console.log('Test server closed');
+      done();
+    });
+  }
 });
 
 // Example test class using Jest
 describe('ToDoList', () => {
+  afterEach(() => {
+    localTodoList = [];
+    localCategoryList = [];
+  });
 
-    afterEach(() => {
-        localTodoList = [];
-        localCategoryList = [];
-    });
+  // Example test case
+  test('testCreateLocalToDo', () => {
+    // Arrange
+    const newEntry = new ToDoEntry('title', 'description', 1);
+    localTodoList.push(newEntry);
+    expect(localTodoList.length).toBe(1);
+  });
 
-    // Example test case
-    test('testCreateLocalToDo', () => {
-        // Arrange
-        const newEntry = new ToDoEntry("title", "description", 1);
-        localTodoList.push(newEntry);
-        expect(localTodoList.length).toBe(1);
-    });
+  //Chasan
+  test('testCreateToDo', () => {
+    const newEntry = new ToDoEntry('testTitle', 'testDescr', 1);
+    localTodoList.push(newEntry);
 
-    //Chasan
-    test('testCreateToDo', () => {
-        let newEntry = new ToDoEntry("testTitle", "testDescr", 1);
-        localTodoList.push(newEntry);
+    const mockReq = {
+      body: {
+        title: newEntry.title,
+        description: newEntry.description,
+        status: newEntry.status,
+        priority: newEntry.priority,
+      },
+    } as unknown as Request;
 
-        const mockReq = {
-            body: { title: newEntry.title, description: newEntry.description, status: newEntry.status, priority: newEntry.priority }
-        } as unknown as Request;
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
 
-        const mockRes = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn()
-        } as unknown as Response;
+    postTodo(mockReq, mockRes);
 
+    expect(mockRes.status).toHaveBeenCalledWith(201);
+  });
 
-        postTodo(mockReq, mockRes);
+  //Chasan
+  test('testCreateToDo-Fault-EmptyTitle', () => {
+    const newEntry = new ToDoEntry('', 'testDescr', 1);
+    localTodoList.push(newEntry);
 
-        expect(mockRes.status).toHaveBeenCalledWith(201);
-    });
+    const mockReq = {
+      body: {
+        title: newEntry.title,
+        description: newEntry.description,
+        status: newEntry.status,
+        priority: newEntry.priority,
+      },
+    } as unknown as Request;
 
-    //Chasan
-    test('testCreateToDo-Fault-EmptyTitle', () => {
-        let newEntry = new ToDoEntry("", "testDescr", 1);
-        localTodoList.push(newEntry);
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
 
-        const mockReq = {
-            body: { title: newEntry.title, description: newEntry.description, status: newEntry.status, priority: newEntry.priority }
-        } as unknown as Request;
+    postTodo(mockReq, mockRes);
 
-        const mockRes = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn()
-        } as unknown as Response;
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+  });
 
+  //Chasan
+  test('testCreateToDo-Fault-MissingTitle', () => {
+    const newEntry = new ToDoEntry('', 'testDescr', 1);
+    localTodoList.push(newEntry);
 
-        postTodo(mockReq, mockRes);
+    const mockReq = {
+      body: {
+        description: newEntry.description,
+        status: newEntry.status,
+        priority: newEntry.priority,
+      },
+    } as unknown as Request;
 
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
 
-        expect(mockRes.status).toHaveBeenCalledWith(400);
-    });
+    postTodo(mockReq, mockRes);
 
-    //Chasan
-    test('testCreateToDo-Fault-MissingTitle', () => {
-        let newEntry = new ToDoEntry("", "testDescr", 1);
-        localTodoList.push(newEntry);
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+  });
 
-        const mockReq = {
-            body: { description: newEntry.description, status: newEntry.status, priority: newEntry.priority }
-        } as unknown as Request;
+  //Annalena
+  test('testUpdateToDo', () => {
+    const newEntry = new ToDoEntry('changeThis', 'DescriptionA', 1);
+    localTodoList.push(newEntry);
+    const newDescription = 'DescriptionB';
+    const id = newEntry.id.toString();
 
-        const mockRes = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn()
-        } as unknown as Response;
+    const mockReq = {
+      params: { id: id },
+      body: {
+        title: newEntry.title,
+        description: 'DescriptionB',
+        status: newEntry.status,
+        priority: newEntry.priority,
+      },
+    } as unknown as Request;
 
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
 
-        postTodo(mockReq, mockRes);
+    changeTodo(localTodoList, mockReq, mockRes);
+    expect(localTodoList[0].description).toBe(newDescription);
+  });
 
+  //Annalena
+  test('testDeleteTodo', () => {
+    const newEntry = new ToDoEntry('deleteThis', 'Description', 1);
+    localTodoList.push(newEntry);
+    const id = newEntry.id.toString();
 
-        expect(mockRes.status).toHaveBeenCalledWith(400);
-    });
+    const mockReq = {
+      params: { id: id },
+      body: {
+        title: newEntry.title,
+        description: newEntry.description,
+        status: newEntry.status,
+        priority: newEntry.priority,
+      },
+    } as unknown as Request;
 
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
 
+    deleteTodo(localTodoList, mockReq, mockRes);
 
-    //Annalena
-    test('testUpdateToDo', () => {
-        let newEntry = new ToDoEntry("changeThis", "DescriptionA", 1);
-        localTodoList.push(newEntry);
-        let newDescription = 'DescriptionB';
-        let id = newEntry.id.toString();
+    expect(localTodoList.length).toBe(0);
+  });
 
-        const mockReq = {
-            params: { id: id },
-            body: { title: newEntry.title, description: 'DescriptionB', status: newEntry.status, priority: newEntry.priority }
-        } as unknown as Request;
+  //Nico
+  test('testCreateCategory', () => {
+    const name: string = 'SwagCategory';
 
-        const mockRes = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn()
-        } as unknown as Response;
+    const mockReq = {
+      body: { name: name },
+    } as unknown as Request;
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
 
-        changeTodo(localTodoList, mockReq, mockRes);
-        expect(localTodoList[0].description).toBe(newDescription);
-    });
+    postCat(localCategoryList, mockReq, mockRes);
 
+    expect(localCategoryList.length).toBe(1);
+  });
 
-    //Annalena
-    test('testDeleteTodo', () => {
-        let newEntry = new ToDoEntry("deleteThis", "Description", 1);
-        localTodoList.push(newEntry);
-        let id = newEntry.id.toString();
+  test('testMarkAsDone', () => {
+    const newEntry: ToDoEntry = new ToDoEntry('Mark this', 'HEHHEHE im swag', 2);
+    localTodoList.push(newEntry);
+    const id: number = newEntry.id;
 
-        const mockReq = {
-            params: { id: id },
-            body: { title: newEntry.title, description: newEntry.description, status: newEntry.status, priority: newEntry.priority }
-        } as unknown as Request;
+    const mockReq = {
+      params: { id: id },
+    } as unknown as Request;
 
-        const mockRes = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn()
-        } as unknown as Response;
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
 
-        deleteTodo(localTodoList, mockReq, mockRes);
+    markDone(localTodoList, mockReq, mockRes);
+    let markedEntry = 0;
+    for (let i: number = 0; i < localTodoList.length; i++) {
+      if (localTodoList[i].id == id) {
+        markedEntry = i;
+      }
+    }
 
-        expect(localTodoList.length).toBe(0);
-    })
+    expect(localTodoList[markedEntry].status).toBe(true);
+  });
 
-    //Nico
-    test('testCreateCategory', () => {
-        let name: string = "SwagCategory";
+  //Alex
+  test('testUpdateCat', () => {
+    const newEntry: Category = new Category('CategoryB');
+    const id: number = newEntry.id;
+    localCategoryList.push(newEntry);
 
-        const mockReq = {
-            body: {name: name}
-        } as unknown as Request;
-        const mockRes = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn()
-        } as unknown as Response;
+    const mockReq = {
+      params: { id: id },
+      body: { name: newEntry.name },
+    } as unknown as Request;
 
-        postCat(localCategoryList, mockReq, mockRes);
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
 
-        expect(localCategoryList.length).toBe(1);
+    updateCat(localCategoryList, mockReq, mockRes);
 
-    })
+    expect(localCategoryList[0].name).toBe(newEntry.name);
+  });
 
-    test('testMarkAsDone', () => {
-        let newEntry: ToDoEntry = new ToDoEntry("Mark this", "HEHHEHE im swag", 2);
-        localTodoList.push(newEntry);
-        let id: number = newEntry.id;
+  test('testDeleteCategory', () => {
+    const newEntry: Category = new Category('CategoryB');
+    localCategoryList.push(newEntry);
+    const id = newEntry.id.toString();
 
-        const mockReq = {
-            params: {id: id}
-        } as unknown as Request;
+    const mockReq = {
+      params: { id: id },
+      body: { name: newEntry.name },
+    } as unknown as Request;
 
-        const mockRes = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn()
-        } as unknown as Response;
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
 
-        markDone(localTodoList, mockReq, mockRes);
-        let markedEntry = 0;
-        for (let i: number = 0; i < localTodoList.length; i++) {
-            if (localTodoList[i].id == id) {
-                markedEntry = i;
-            }
-        }
+    deleteCat(localCategoryList, mockReq, mockRes);
 
-        expect(localTodoList[markedEntry].status).toBe(true);
-
-    })
-
-    //Alex
-    test('testUpdateCat', () => {
-        let newEntry: Category = new Category("CategoryB");
-        let id: number = newEntry.id;
-        localCategoryList.push(newEntry);
-
-        const mockReq = {
-            params: {id: id},
-            body: {name: newEntry.name}
-        } as unknown as Request;
-
-        const mockRes = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn()
-        } as unknown as Response;
-
-        updateCat(localCategoryList, mockReq, mockRes);
-
-        expect(localCategoryList[0].name).toBe(newEntry.name);
-
-    });
-
-    test('testDeleteCategory', () => {
-        let newEntry: Category = new Category("CategoryB");
-        localCategoryList.push(newEntry);
-        let id = newEntry.id.toString();
-
-        const mockReq = {
-            params: {id: id},
-            body: {name: newEntry.name}
-        } as unknown as Request;
-
-        const mockRes = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn()
-        } as unknown as Response;
-
-        deleteCat(localCategoryList, mockReq, mockRes);
-
-        expect(localCategoryList.length).toBe(0);
-
-    })
+    expect(localCategoryList.length).toBe(0);
+  });
 });
