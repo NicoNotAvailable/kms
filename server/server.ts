@@ -101,16 +101,13 @@ export function deleteTodo(todoList: ToDoEntry[], req: any, res: any): void {
   for (let i: number = 0; i < todoList.length; i++) {
     if (todoList[i].id === todoIndex) {
       todoList.splice(i, 1);
+      res.status(200);
+      res.json({ msg: 'User was deleted' });
       break;
     }
   }
-  if (deletedEntry !== null) {
-    res.status(200);
-    res.json({ msg: 'User was deleted' });
-  } else {
     res.status(404);
     res.json({ msg: 'Todo Entry not found!' });
-  }
 }
 
 export function changeTodo(todoList: ToDoEntry[], req: any, res: any): void {
