@@ -261,4 +261,25 @@ describe('ToDoList', () => {
 
     expect(localCategoryList.length).toBe(0);
   });
+
+  // Tina
+  test('testDeleteCategory-Fault-NotFound', () => {
+    const newEntry: Category = new Category('CategoryB');
+    const id = newEntry.id.toString();
+
+    // Category doesnt get pushed into Category List
+    const mockReq = {
+      params: { id: id },
+      body: { name: newEntry.name },
+    } as unknown as Request;
+
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
+
+    deleteCat(localCategoryList, mockReq, mockRes);
+
+    expect(mockRes.status).toHaveBeenCalledWith(404);
+  });
 });
