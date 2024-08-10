@@ -135,7 +135,6 @@ export function changeTodo(todoList: ToDoEntry[], req: any, res: any): void {
       return;
     }
   }
-
   res.status(404);
   res.json({ msg: 'Todo Entry not found!' });
 }
@@ -166,7 +165,7 @@ export function postCat(categoryList: Category[], req: express.Request, res: exp
   } else {
     const newCategory: Category = new Category(name);
     categoryList.push(newCategory);
-    res.status(201).json({ msg: 'Creating Category went WHOOOP WHOOP' });
+    res.status(201).json({ msg: 'There was an error creating the category' });
   }
 }
 
