@@ -38,6 +38,13 @@ afterAll((done) => {
       console.log('Test server closed');
       done();
     });
+
+    setTimeout(() => {
+      console.error('closing after 4 seconds');
+      process.exit(1);
+    }, 4000);
+  } else {
+    done();
   }
 });
 
@@ -263,6 +270,56 @@ describe('ToDoList', () => {
   });
 
   // Tina
+  test('testCreateCategory-Fault-EmptyTitle', () => {
+
+    const mockReq = {
+      body: { name: '' },
+    } as unknown as Request;
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
+
+    postCat(localCategoryList, mockReq, mockRes);
+
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+  });
+
+  test('testCreateCategory-Fault-MissingTitle', () => {
+
+    const mockReq = {
+      body: { },
+    } as unknown as Request;
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
+
+    postCat(localCategoryList, mockReq, mockRes);
+
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+  });
+
+  test('testUpdateCat-Fault-EmptyTitle', () => {
+    const newEntry: Category = new Category('');
+    const id: number = newEntry.id;
+    localCategoryList.push(newEntry);
+
+    const mockReq = {
+      params: { id: id },
+      body: { name: newEntry.name },
+    } as unknown as Request;
+
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
+
+    updateCat(localCategoryList, mockReq, mockRes);
+
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+  });
+
   test('testDeleteCategory-Fault-NotFound', () => {
     const newEntry: Category = new Category('CategoryB');
     const id = newEntry.id.toString();
@@ -282,4 +339,5 @@ describe('ToDoList', () => {
 
     expect(mockRes.status).toHaveBeenCalledWith(404);
   });
+
 });

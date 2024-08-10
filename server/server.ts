@@ -118,8 +118,6 @@ export function changeTodo(todoList: ToDoEntry[], req: any, res: any): void {
 
   let changedEntry: ToDoEntry;
 
-  const hi: string = '123';
-  console.log(hi);
   for (const element of todoList) {
     if (element.id === todoIndex) {
       changedEntry = element;
@@ -175,6 +173,10 @@ export function updateCat(categoryList: Category[], req: express.Request, res: e
 
   let changedEntry: Category;
 
+  if (name == undefined || name.trim().length == 0 || name === '') {
+    res.status(400).json({msg: 'Name cannot be empty'});
+    return
+  }
   for (const element of categoryList) {
     if (element.id === id) {
       changedEntry = element;
