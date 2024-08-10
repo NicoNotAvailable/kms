@@ -38,13 +38,6 @@ afterAll((done) => {
       console.log('Test server closed');
       done();
     });
-
-    setTimeout(() => {
-      console.error('closing after 4 seconds');
-      process.exit(1);
-    }, 4000);
-  } else {
-    done();
   }
 });
 
