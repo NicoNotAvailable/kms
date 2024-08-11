@@ -101,16 +101,13 @@ export function deleteTodo(todoList: ToDoEntry[], req: any, res: any): void {
   for (let i: number = 0; i < todoList.length; i++) {
     if (todoList[i].id === todoIndex) {
       todoList.splice(i, 1);
+      res.status(200);
+      res.json({ msg: 'User was deleted' });
       break;
     }
   }
-  if (deletedEntry !== null) {
-    res.status(200);
-    res.json({ msg: 'User was deleted' });
-  } else {
     res.status(404);
     res.json({ msg: 'Todo Entry not found!' });
-  }
 }
 
 export function changeTodo(todoList: ToDoEntry[], req: any, res: any): void {
@@ -121,8 +118,6 @@ export function changeTodo(todoList: ToDoEntry[], req: any, res: any): void {
 
   let changedEntry: ToDoEntry;
 
-  const hi: string = '123';
-  console.log(hi);
   for (const element of todoList) {
     if (element.id === todoIndex) {
       changedEntry = element;
@@ -138,7 +133,6 @@ export function changeTodo(todoList: ToDoEntry[], req: any, res: any): void {
       return;
     }
   }
-
   res.status(404);
   res.json({ msg: 'Todo Entry not found!' });
 }
@@ -169,7 +163,7 @@ export function postCat(categoryList: Category[], req: express.Request, res: exp
   } else {
     const newCategory: Category = new Category(name);
     categoryList.push(newCategory);
-    res.status(201).json({ msg: 'Creating Category went WHOOOP WHOOP' });
+    res.status(201).json({ msg: 'There was an error creating the category' });
   }
 }
 
@@ -179,6 +173,10 @@ export function updateCat(categoryList: Category[], req: express.Request, res: e
 
   let changedEntry: Category;
 
+  if (name == undefined || name.trim().length == 0 || name === '') {
+    res.status(400).json({msg: 'Name cannot be empty'});
+    return
+  }
   for (const element of categoryList) {
     if (element.id === id) {
       changedEntry = element;
@@ -198,14 +196,11 @@ export function deleteCat(categoryList: Category[], req: express.Request, res: e
   for (let i: number = 0; i < categoryList.length; i++) {
     if (categoryList[i].id === id) {
       categoryList.splice(i, 1);
+      res.status(200);
+      res.json({ msg: 'Category was deleted' });
       break;
     }
   }
-  if (deletedEntry !== null) {
-    res.status(200);
-    res.json({ msg: 'Category was deleted' });
-  } else {
     res.status(404);
     res.json({ msg: 'Category not found!' });
-  }
 }

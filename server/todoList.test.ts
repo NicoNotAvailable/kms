@@ -261,4 +261,76 @@ describe('ToDoList', () => {
 
     expect(localCategoryList.length).toBe(0);
   });
+
+  // Tina
+  test('testCreateCategory-Fault-EmptyTitle', () => {
+
+    const mockReq = {
+      body: { name: '' },
+    } as unknown as Request;
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
+
+    postCat(localCategoryList, mockReq, mockRes);
+
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+  });
+
+  test('testCreateCategory-Fault-MissingTitle', () => {
+
+    const mockReq = {
+      body: { },
+    } as unknown as Request;
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
+
+    postCat(localCategoryList, mockReq, mockRes);
+
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+  });
+
+  test('testUpdateCat-Fault-EmptyTitle', () => {
+    const newEntry: Category = new Category('');
+    const id: number = newEntry.id;
+    localCategoryList.push(newEntry);
+
+    const mockReq = {
+      params: { id: id },
+      body: { name: newEntry.name },
+    } as unknown as Request;
+
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
+
+    updateCat(localCategoryList, mockReq, mockRes);
+
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+  });
+
+  test('testDeleteCategory-Fault-NotFound', () => {
+    const newEntry: Category = new Category('CategoryB');
+    const id = newEntry.id.toString();
+
+    // Category doesnt get pushed into Category List
+    const mockReq = {
+      params: { id: id },
+      body: { name: newEntry.name },
+    } as unknown as Request;
+
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
+
+    deleteCat(localCategoryList, mockReq, mockRes);
+
+    expect(mockRes.status).toHaveBeenCalledWith(404);
+  });
+
 });
