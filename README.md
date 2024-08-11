@@ -25,29 +25,3 @@ version than the currently supported SonarLint-Plugin
 - To format code with prettier you can use following command:
 
 > npm run format
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-minercraft
