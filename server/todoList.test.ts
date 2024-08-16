@@ -333,4 +333,62 @@ describe('ToDoList', () => {
     expect(mockRes.status).toHaveBeenCalledWith(404);
   });
 
+  //Stefan Matrikelnummer: 5317756
+  test('testChangeToDoPriority', () => {
+    const newEntry = new ToDoEntry('Priority Change', 'This is a Discription', 1);
+    localTodoList.push(newEntry);
+
+    const newPriority = 3;
+    const id = newEntry.id.toString();
+
+    const mockReq = {
+      params: { id: id },
+      body: {
+        title: newEntry.title,
+        description: newEntry.description,
+        status: newEntry.status,
+        priority: newPriority,
+      },
+    } as unknown as Request;
+
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
+
+    changeTodo(localTodoList, mockReq, mockRes);
+    expect(localTodoList[0].priority).toBe(newPriority);
+  });
+
+  test('testUpdateCategoryFaultInvalidId', () => {
+    const nonExistentId = -9999; // Assuming this ID doesn't exist
+
+    const mockReq = {
+      params: { id: nonExistentId.toString() },
+      body: { name: 'New Category Name' },
+    } as unknown as Request;
+
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
+
+    updateCat(localCategoryList, mockReq, mockRes);
+
+    expect(mockRes.status).toHaveBeenCalledWith(404);
+    expect(mockRes.json).toHaveBeenCalledWith({ msg: 'Category not found!' });
+  });
+
+  test('testCreateToDoDefaultStatus', () => {
+    // Arrange
+    const newEntry = new ToDoEntry('TestTitle', 'TestDescription', 1);
+
+    // Act
+    localTodoList.push(newEntry);
+
+    // Assert
+    expect(localTodoList[0].status).toBe(false);
+  });
+
+
 });
