@@ -192,7 +192,6 @@ export function updateCat(categoryList: Category[], req: express.Request, res: e
 
 export function deleteCat(categoryList: Category[], req: express.Request, res: express.Response) {
   const id: number = Number(req.params.id);
-  let deletedEntry: Category[] | undefined;
   for (let i: number = 0; i < categoryList.length; i++) {
     if (categoryList[i].id === id) {
       categoryList.splice(i, 1);
@@ -201,6 +200,6 @@ export function deleteCat(categoryList: Category[], req: express.Request, res: e
       break;
     }
   }
-    res.status(404);
-    res.json({ msg: 'Category not found!' });
+  res.status(404);
+  res.json({ msg: 'Category not found!' });
 }
