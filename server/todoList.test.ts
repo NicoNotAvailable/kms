@@ -396,7 +396,7 @@ describe('ToDoList', () => {
     const newEntry = new ToDoEntry('validTitle', 'validDescription', 1);
     localTodoList.push(newEntry);
 
-    const nonExistentId = -9999; // Annahme, dass diese ID nicht existiert
+    const nonExistentId = -9999;
 
     const mockReq = {
       params: { id: nonExistentId.toString() },
@@ -416,14 +416,14 @@ describe('ToDoList', () => {
     changeTodo(localTodoList, mockReq, mockRes);
 
     expect(mockRes.status).toHaveBeenCalledWith(404);
-    expect(mockRes.json).toHaveBeenCalledWith({ msg: 'ToDoEntry not found!' });
+    expect(mockRes.json).toHaveBeenCalledWith({ msg: 'Todo Entry not found!' });
   });
 
   test('testDeleteToDo-Fault-InvalidId', () => {
     const newEntry = new ToDoEntry('deleteThis', 'Description', 1);
     localTodoList.push(newEntry);
 
-    const nonExistentId = -9999; // Annahme, dass diese ID nicht existiert
+    const nonExistentId = -9999;
 
     const mockReq = {
       params: { id: nonExistentId.toString() },
@@ -437,7 +437,7 @@ describe('ToDoList', () => {
     deleteTodo(localTodoList, mockReq, mockRes);
 
     expect(mockRes.status).toHaveBeenCalledWith(404);
-    expect(mockRes.json).toHaveBeenCalledWith({ msg: 'ToDoEntry not found!' });
+    expect(mockRes.json).toHaveBeenCalledWith({ msg: 'Todo Entry not found!' });
   });
 
 
