@@ -391,4 +391,54 @@ describe('ToDoList', () => {
   });
 
 
+  // Fabian
+  test('testUpdateToDo-Fault-InvalidId', () => {
+    const newEntry = new ToDoEntry('validTitle', 'validDescription', 1);
+    localTodoList.push(newEntry);
+
+    const nonExistentId = -9999; // Annahme, dass diese ID nicht existiert
+
+    const mockReq = {
+      params: { id: nonExistentId.toString() },
+      body: {
+        title: 'Non-existent Title',
+        description: 'Non-existent Description',
+        status: newEntry.status,
+        priority: newEntry.priority,
+      },
+    } as unknown as Request;
+
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
+
+    changeTodo(localTodoList, mockReq, mockRes);
+
+    expect(mockRes.status).toHaveBeenCalledWith(404);
+    expect(mockRes.json).toHaveBeenCalledWith({ msg: 'ToDoEntry not found!' });
+  });
+
+  test('testDeleteToDo-Fault-InvalidId', () => {
+    const newEntry = new ToDoEntry('deleteThis', 'Description', 1);
+    localTodoList.push(newEntry);
+
+    const nonExistentId = -9999; // Annahme, dass diese ID nicht existiert
+
+    const mockReq = {
+      params: { id: nonExistentId.toString() },
+    } as unknown as Request;
+
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
+
+    deleteTodo(localTodoList, mockReq, mockRes);
+
+    expect(mockRes.status).toHaveBeenCalledWith(404);
+    expect(mockRes.json).toHaveBeenCalledWith({ msg: 'ToDoEntry not found!' });
+  });
+
+
 });
